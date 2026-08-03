@@ -91,21 +91,29 @@ class TradePlussWidgetProvider : AppWidgetProvider() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val data = ApiClient.fetchWidgetData(
-                    Prefs.getUrl(context),
-                    Prefs.getUser(context),
-                    Prefs.getToken(context)
-                )
+                val url = Prefs.getUrl(context)
+                val user = Prefs.getUser(context)
+                val token = Prefs.getToken(context)
+                
+                // Log for debugging
+                android.util.Log.d("WidgetDebug", "Fetching from: $url, user: $user")
+                
+                val data = ApiClient.fetchWidgetData(url, user, token)
+                
+                android.util.Log.d("WidgetDebug", "Response success: ${data.success}")
+                
                 withContext(Dispatchers.Main) {
                     val ready = baseViews(context)
                     applyData(ready, data)
                     manager.updateAppWidget(widgetId, ready)
                 }
             } catch (e: Exception) {
+                android.util.Log.e("WidgetError", "Fetch failed", e)
                 withContext(Dispatchers.Main) {
                     val err = baseViews(context)
                     err.setTextViewText(R.id.tv_total_assets, "خطا")
-                    err.setTextViewText(R.id.tv_updated_at, (e.message ?: "شبکه").take(24))
+                    val msg = e.message ?: "شبکه"
+                    err.setTextViewText(R.id.tv_updated_at, msg.take(30))
                     manager.updateAppWidget(widgetId, err)
                 }
             }
