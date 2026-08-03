@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ترید پلاس ویجت</string>
+    <string name="widget_name">ترید پلاس</string>
+    <string name="widget_description">ویجت دارایی و سود/زیان ترید پلاس</string>
+    <string name="total_assets">ارزش کل دارایی</string>
+    <string name="daily_buy">مجموع خرید روزانه</string>
+    <string name="daily_pnl">سود و زیان خرید روزانه</string>
+    <string name="trend_7d">روند ۷ روزه (ارزش سبد)</string>
+    <string name="assets">دارایی‌ها</string>
+    <string name="current_value">ارزش جاری</string>
+    <string name="change_percent">تغییر %</string>
+    <string name="toman">تومان</string>
+    <string name="last_update">آخرین بروزرسانی</string>
+    <string name="config_title">تنظیمات ویجت ترید پلاس</string>
+    <string name="webapp_url_hint">آدرس Web App اسکریپت</string>
+    <string name="username_hint">نام کاربری</string>
+    <string name="token_hint">توکن ویجت</string>
+    <string name="save">ذخیره و افزودن ویجت</string>
+    <string name="note">توکن را از تابع generateWidgetToken در Apps Script بگیرید</string>
+</resources>
