@@ -17,5 +17,9 @@
     <string name="username_hint">نام کاربری</string>
     <string name="token_hint">توکن ویجت</string>
     <string name="save">ذخیره و افزودن ویجت</string>
+    <string name="test_connection">تست اتصال</string>
+    <string name="testing">در حال تست...</string>
+    <string name="connection_success">✅ اتصال موفقیت‌آمیز بود</string>
+    <string name="connection_failed">❌ خطا در اتصال: %s</string>
     <string name="note">توکن را از تابع generateWidgetToken در Apps Script بگیرید</string>
 </resources>
