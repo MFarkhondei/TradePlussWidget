@@ -12,7 +12,7 @@
         android:theme="@style/Theme.TradePlussWidget"
         android:usesCleartextTraffic="true">
 
-        <!-- Configuration Activity (first open / settings) -->
+        <!-- Settings / launcher activity -->
         <activity
             android:name=".ConfigActivity"
             android:exported="true"
@@ -20,9 +20,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
 
@@ -39,12 +36,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
-
-        <!-- Background update service -->
-        <service
-            android:name=".WidgetUpdateService"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 </manifest>
