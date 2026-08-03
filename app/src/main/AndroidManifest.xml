@@ -12,7 +12,6 @@
         android:theme="@style/Theme.TradePlussWidget"
         android:usesCleartextTraffic="true">
 
-        <!-- Settings / launcher activity -->
         <activity
             android:name=".ConfigActivity"
             android:exported="true"
@@ -23,7 +22,6 @@
             </intent-filter>
         </activity>
 
-        <!-- App Widget Provider -->
         <receiver
             android:name=".TradePlussWidgetProvider"
             android:exported="true"
