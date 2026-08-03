@@ -9,13 +9,15 @@ import android.content.Intent
 import android.graphics.Color
 import android.widget.RemoteViews
 import com.tradepluss.widget.model.WidgetResponse
-import java.util.concurrent.Executors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TradePlussWidgetProvider : AppWidgetProvider() {
 
     companion object {
         const val ACTION_REFRESH = "com.tradepluss.widget.ACTION_REFRESH"
-        private val executor = Executors.newSingleThreadExecutor()
 
         fun updateAll(context: Context) {
             val mgr = AppWidgetManager.getInstance(context)
@@ -87,21 +89,25 @@ class TradePlussWidgetProvider : AppWidgetProvider() {
         views.setTextViewText(R.id.tv_updated_at, "در حال بارگذاری")
         manager.updateAppWidget(widgetId, views)
 
-        executor.execute {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val data = ApiClient.fetchWidgetData(
                     Prefs.getUrl(context),
                     Prefs.getUser(context),
                     Prefs.getToken(context)
                 )
-                val ready = baseViews(context)
-                applyData(ready, data)
-                manager.updateAppWidget(widgetId, ready)
+                withContext(Dispatchers.Main) {
+                    val ready = baseViews(context)
+                    applyData(ready, data)
+                    manager.updateAppWidget(widgetId, ready)
+                }
             } catch (e: Exception) {
-                val err = baseViews(context)
-                err.setTextViewText(R.id.tv_total_assets, "خطا")
-                err.setTextViewText(R.id.tv_updated_at, (e.message ?: "شبکه").take(24))
-                manager.updateAppWidget(widgetId, err)
+                withContext(Dispatchers.Main) {
+                    val err = baseViews(context)
+                    err.setTextViewText(R.id.tv_total_assets, "خطا")
+                    err.setTextViewText(R.id.tv_updated_at, (e.message ?: "شبکه").take(24))
+                    manager.updateAppWidget(widgetId, err)
+                }
             }
         }
     }
