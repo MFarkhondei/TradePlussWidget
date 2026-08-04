@@ -2,12 +2,25 @@
 <resources>
     <style name="Theme.TradePlussWidget" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent_gold</item>
-        <item name="colorPrimaryVariant">@color/accent_orange</item>
+        <item name="colorPrimaryVariant">@color/accent_gold</item>
         <item name="colorOnPrimary">@color/bg_dark</item>
+        <item name="colorSecondary">@color/accent_gold</item>
         <item name="android:statusBarColor">@color/bg_dark</item>
         <item name="android:navigationBarColor">@color/bg_dark</item>
         <item name="android:windowBackground">@color/bg_dark</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
+    </style>
+
+    <!-- Transparent activity used for widget refresh (same process privileges as Config) -->
+    <style name="Theme.TradePlussWidget.Transparent" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 </resources>

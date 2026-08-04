@@ -62,8 +62,9 @@ class ConfigActivity : AppCompatActivity() {
             Prefs.save(this, url, user, token, interval)
             UpdateScheduler.schedule(this)
             Toast.makeText(this, "ذخیره شد", Toast.LENGTH_SHORT).show()
-            TradePlussWidgetProvider.applyCachedToAll(this)
-            TradePlussWidgetProvider.updateAll(this)
+            WidgetRenderer.applyCache(this, offline = false)
+            // Same path as test connection
+            WidgetUpdateService.start(this)
             val intervalText = if (interval > 0) "هر $interval دقیقه" else "فقط دستی"
             tvStatus.text = "✅ ذخیره شد · به‌روزرسانی خودکار: $intervalText"
         }
@@ -93,31 +94,24 @@ class ConfigActivity : AppCompatActivity() {
                     Prefs.save(this@ConfigActivity, url, user, token, interval)
                     UpdateScheduler.schedule(this@ConfigActivity)
 
-                    val (response, raw) = ApiClient.fetchWidgetData(url, user, token)
-                    if (response.success) {
-                        Prefs.saveCache(this@ConfigActivity, raw)
-                    }
+                    // Exact same function used by widget refresh
+                    val ok = WidgetRenderer.fetchAndApply(this@ConfigActivity)
 
                     withContext(Dispatchers.Main) {
-                        if (response.success) {
+                        if (ok) {
                             tvStatus.text = getString(R.string.connection_success)
-                            TradePlussWidgetProvider.applyCachedToAll(this@ConfigActivity)
                             Toast.makeText(
                                 this@ConfigActivity,
                                 "داده روی ویجت اعمال شد",
                                 Toast.LENGTH_SHORT
                             ).show()
                         } else {
-                            tvStatus.text = getString(
-                                R.string.connection_failed,
-                                response.message ?: "پاسخ نامعتبر"
-                            )
+                            tvStatus.text = getString(R.string.connection_failed, "پاسخ نامعتبر یا شبکه")
                         }
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        val errorMsg = e.message ?: "خطای ناشناخته"
-                        tvStatus.text = getString(R.string.connection_failed, errorMsg)
+                        tvStatus.text = getString(R.string.connection_failed, e.message ?: "خطای ناشناخته")
                     }
                 } finally {
                     withContext(Dispatchers.Main) {

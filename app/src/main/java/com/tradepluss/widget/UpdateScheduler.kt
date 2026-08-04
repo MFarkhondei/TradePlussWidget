@@ -30,7 +30,6 @@ object UpdateScheduler {
                 am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAt, pi)
             }
         } catch (_: Exception) {
-            // fallback inexact
             try {
                 am.setInexactRepeating(
                     AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -49,7 +48,6 @@ object UpdateScheduler {
         am.cancel(pendingIntent(appCtx))
     }
 
-    /** Call after each successful auto-update to chain the next alarm. */
     fun reschedule(context: Context) {
         schedule(context)
     }
