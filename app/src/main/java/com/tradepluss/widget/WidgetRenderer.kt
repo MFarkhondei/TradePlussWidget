@@ -6,16 +6,31 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.view.View
 import android.widget.RemoteViews
 import com.google.gson.Gson
+import com.tradepluss.widget.model.AssetItem
 import com.tradepluss.widget.model.WidgetResponse
 
-/**
- * Shared widget UI rendering used by Config, SilentRefresh, and Service.
- */
 object WidgetRenderer {
 
     private val gson = Gson()
+
+    private data class AssetSlot(
+        val row: Int,
+        val icon: Int,
+        val name: Int,
+        val value: Int,
+        val pct: Int
+    )
+
+    private val slots = arrayOf(
+        AssetSlot(R.id.row_asset_1, R.id.iv_asset_1, R.id.tv_asset_1_name, R.id.tv_asset_1_value, R.id.tv_asset_1_pct),
+        AssetSlot(R.id.row_asset_2, R.id.iv_asset_2, R.id.tv_asset_2_name, R.id.tv_asset_2_value, R.id.tv_asset_2_pct),
+        AssetSlot(R.id.row_asset_3, R.id.iv_asset_3, R.id.tv_asset_3_name, R.id.tv_asset_3_value, R.id.tv_asset_3_pct),
+        AssetSlot(R.id.row_asset_4, R.id.iv_asset_4, R.id.tv_asset_4_name, R.id.tv_asset_4_value, R.id.tv_asset_4_pct),
+        AssetSlot(R.id.row_asset_5, R.id.iv_asset_5, R.id.tv_asset_5_name, R.id.tv_asset_5_value, R.id.tv_asset_5_pct)
+    )
 
     fun allIds(context: Context): IntArray {
         val mgr = AppWidgetManager.getInstance(context)
@@ -60,7 +75,6 @@ object WidgetRenderer {
         val appCtx = context.applicationContext
         val mgr = AppWidgetManager.getInstance(appCtx)
         val ids = widgetIds ?: allIds(appCtx)
-        // Prefer cache with offline label; only pure error if no cache
         if (applyCache(appCtx, offline = true, widgetIds = ids)) return
         for (id in ids) {
             val views = baseViews(appCtx, id)
@@ -78,14 +92,15 @@ object WidgetRenderer {
         views.setTextViewText(R.id.tv_daily_pnl, "-")
         views.setTextViewText(R.id.tv_daily_pnl_pct, "")
         views.setTextViewText(R.id.tv_daily_buy, "-")
-        views.setTextViewText(R.id.tv_asset_1, "برای تنظیم روی ویجت بزنید")
+        views.setTextViewText(R.id.tv_asset_1_name, "برای تنظیم روی ویجت بزنید")
+        views.setTextViewText(R.id.tv_asset_1_value, "")
+        views.setTextViewText(R.id.tv_asset_1_pct, "")
+        for (i in 1 until slots.size) {
+            views.setViewVisibility(slots[i].row, View.GONE)
+        }
         mgr.updateAppWidget(widgetId, views)
     }
 
-    /**
-     * Same network call as ConfigActivity "تست اتصال".
-     * Returns true on success.
-     */
     fun fetchAndApply(context: Context, widgetIds: IntArray? = null): Boolean {
         val appCtx = context.applicationContext
         if (!Prefs.isConfigured(appCtx)) return false
@@ -112,7 +127,6 @@ object WidgetRenderer {
     private fun baseViews(context: Context, widgetId: Int): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
 
-        // Refresh → open SilentRefreshActivity (foreground, same as Config)
         val refreshIntent = Intent(context, SilentRefreshActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP or
@@ -149,7 +163,7 @@ object WidgetRenderer {
         views.setTextViewText(R.id.tv_daily_buy, NumberUtils.format(data.dailyBuyToman))
 
         val pnl = data.dailyProfitToman
-        val pnlColor = if (pnl >= 0) Color.parseColor("#22C55E") else Color.parseColor("#EF4444")
+        val pnlColor = if (pnl >= 0) Color.parseColor("#34D399") else Color.parseColor("#F87171")
         views.setTextViewText(R.id.tv_daily_pnl, NumberUtils.formatSigned(pnl))
         views.setTextColor(R.id.tv_daily_pnl, pnlColor)
         views.setTextViewText(R.id.tv_daily_pnl_pct, NumberUtils.formatPercent(data.dailyProfitPercent))
@@ -161,22 +175,45 @@ object WidgetRenderer {
             if (offline) "آفلاین · $stamp" else stamp
         )
 
-        val slots = intArrayOf(
-            R.id.tv_asset_1, R.id.tv_asset_2, R.id.tv_asset_3, R.id.tv_asset_4, R.id.tv_asset_5
-        )
         for (i in slots.indices) {
+            val slot = slots[i]
             if (i < data.items.size) {
-                val it = data.items[i]
-                val name = it.coinName.ifBlank { it.symbol }.ifBlank { "-" }
-                val line =
-                    "$name  ${NumberUtils.format(it.currentValue)}  ${NumberUtils.formatPercent(it.profitPercent)}"
-                views.setTextViewText(slots[i], line)
-                val c =
-                    if (it.profitPercent >= 0) Color.parseColor("#22C55E") else Color.parseColor("#EF4444")
-                views.setTextColor(slots[i], c)
+                views.setViewVisibility(slot.row, View.VISIBLE)
+                bindAsset(views, slot, data.items[i])
             } else {
-                views.setTextViewText(slots[i], "")
+                views.setViewVisibility(slot.row, View.GONE)
             }
+        }
+    }
+
+    private fun bindAsset(views: RemoteViews, slot: AssetSlot, item: AssetItem) {
+        val name = item.coinName.ifBlank { item.symbol }.ifBlank { "-" }
+        val positive = item.profitPercent >= 0
+        val pctColor = if (positive) Color.parseColor("#34D399") else Color.parseColor("#F87171")
+        val arrow = if (positive) " ↑" else " ↓"
+
+        views.setTextViewText(slot.name, name)
+        views.setTextViewText(slot.value, NumberUtils.format(item.currentValue))
+        views.setTextViewText(slot.pct, NumberUtils.formatPercent(item.profitPercent) + arrow)
+        views.setTextColor(slot.pct, pctColor)
+        views.setInt(
+            slot.pct,
+            "setBackgroundResource",
+            if (positive) R.drawable.bg_badge_pos else R.drawable.bg_badge_neg
+        )
+        views.setImageViewResource(slot.icon, iconForSymbol(item.symbol, item.coinName))
+    }
+
+    private fun iconForSymbol(symbol: String, coinName: String): Int {
+        val s = symbol.uppercase()
+        val n = coinName
+        return when {
+            s.contains("BTC") || n.contains("بیت") -> R.drawable.ic_asset_btc
+            s.contains("ETH") || n.contains("اتری") -> R.drawable.ic_asset_eth
+            s.contains("USDC") || s.contains("USDT") || n.contains("یو اس") || n.contains("تتر") -> R.drawable.ic_asset_usdc
+            s.contains("GOLD") || n.contains("طلا") -> R.drawable.ic_asset_gold
+            s.contains("SILVER") || n.contains("نقره") -> R.drawable.ic_asset_silver
+            else -> R.drawable.ic_coin_default
         }
     }
 }
