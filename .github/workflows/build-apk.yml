@@ -29,11 +29,17 @@ jobs:
 
       - name: Download Vazirmatn fonts
         run: |
+          mkdir -p app/src/main/assets/fonts
           mkdir -p app/src/main/res/font
           BASE="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/ttf"
-          curl -fsSL "$BASE/Vazirmatn-Regular.ttf" -o app/src/main/res/font/vazirmatn_regular.ttf
-          curl -fsSL "$BASE/Vazirmatn-Medium.ttf" -o app/src/main/res/font/vazirmatn_medium.ttf
-          curl -fsSL "$BASE/Vazirmatn-Bold.ttf" -o app/src/main/res/font/vazirmatn_bold.ttf
+          curl -fsSL "$BASE/Vazirmatn-Regular.ttf" -o app/src/main/assets/fonts/vazirmatn_regular.ttf
+          curl -fsSL "$BASE/Vazirmatn-Medium.ttf" -o app/src/main/assets/fonts/vazirmatn_medium.ttf
+          curl -fsSL "$BASE/Vazirmatn-Bold.ttf" -o app/src/main/assets/fonts/vazirmatn_bold.ttf
+          # also copy to res/font for XML fontFamily fallback
+          cp app/src/main/assets/fonts/vazirmatn_regular.ttf app/src/main/res/font/vazirmatn_regular.ttf
+          cp app/src/main/assets/fonts/vazirmatn_medium.ttf app/src/main/res/font/vazirmatn_medium.ttf
+          cp app/src/main/assets/fonts/vazirmatn_bold.ttf app/src/main/res/font/vazirmatn_bold.ttf
+          ls -la app/src/main/assets/fonts/
           ls -la app/src/main/res/font/
 
       - name: Setup Gradle Wrapper

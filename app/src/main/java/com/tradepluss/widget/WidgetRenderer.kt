@@ -43,7 +43,7 @@ object WidgetRenderer {
         val ids = widgetIds ?: allIds(appCtx)
         for (id in ids) {
             val views = baseViews(appCtx, id)
-            views.setTextViewText(R.id.tv_updated_at, "در حال بروزرسانی...")
+            FontHelper.setText(views, appCtx, R.id.tv_updated_at, "در حال بروزرسانی...")
             mgr.updateAppWidget(id, views)
         }
     }
@@ -54,7 +54,7 @@ object WidgetRenderer {
         val ids = widgetIds ?: allIds(appCtx)
         for (id in ids) {
             val views = baseViews(appCtx, id)
-            applyData(views, data, offline)
+            applyData(appCtx, views, data, offline)
             mgr.updateAppWidget(id, views)
         }
     }
@@ -78,23 +78,24 @@ object WidgetRenderer {
         if (applyCache(appCtx, offline = true, widgetIds = ids)) return
         for (id in ids) {
             val views = baseViews(appCtx, id)
-            views.setTextViewText(R.id.tv_total_assets, "خطا")
-            views.setTextViewText(R.id.tv_updated_at, message.replace("\n", " ").take(40))
+            FontHelper.setText(views, appCtx, R.id.tv_total_assets, "خطا", bold = true)
+            FontHelper.setText(views, appCtx, R.id.tv_updated_at, message.replace("\n", " ").take(40))
             mgr.updateAppWidget(id, views)
         }
     }
 
     fun showNotConfigured(context: Context, widgetId: Int) {
-        val mgr = AppWidgetManager.getInstance(context)
-        val views = baseViews(context, widgetId)
-        views.setTextViewText(R.id.tv_total_assets, "تنظیم نشده")
-        views.setTextViewText(R.id.tv_updated_at, "اپ را باز کنید")
-        views.setTextViewText(R.id.tv_daily_pnl, "-")
-        views.setTextViewText(R.id.tv_daily_pnl_pct, "")
-        views.setTextViewText(R.id.tv_daily_buy, "-")
-        views.setTextViewText(R.id.tv_asset_1_name, "برای تنظیم روی ویجت بزنید")
-        views.setTextViewText(R.id.tv_asset_1_value, "")
-        views.setTextViewText(R.id.tv_asset_1_pct, "")
+        val appCtx = context.applicationContext
+        val mgr = AppWidgetManager.getInstance(appCtx)
+        val views = baseViews(appCtx, widgetId)
+        FontHelper.setText(views, appCtx, R.id.tv_total_assets, "تنظیم نشده", bold = true)
+        FontHelper.setText(views, appCtx, R.id.tv_updated_at, "اپ را باز کنید")
+        FontHelper.setText(views, appCtx, R.id.tv_daily_pnl, "-", bold = true)
+        FontHelper.setText(views, appCtx, R.id.tv_daily_pnl_pct, "")
+        FontHelper.setText(views, appCtx, R.id.tv_daily_buy, "-", bold = true)
+        FontHelper.setText(views, appCtx, R.id.tv_asset_1_name, "برای تنظیم روی ویجت بزنید", bold = true)
+        FontHelper.setText(views, appCtx, R.id.tv_asset_1_value, "", bold = true)
+        FontHelper.setText(views, appCtx, R.id.tv_asset_1_pct, "", bold = true)
         for (i in 1 until slots.size) {
             views.setViewVisibility(slots[i].row, View.GONE)
         }
@@ -127,6 +128,9 @@ object WidgetRenderer {
     private fun baseViews(context: Context, widgetId: Int): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
 
+        // Re-apply static labels with Vazir (XML fontFamily is ignored by many launchers)
+        FontHelper.setText(views, context, R.id.tv_title, context.getString(R.string.widget_name), bold = true)
+
         val refreshIntent = Intent(context, SilentRefreshActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP or
@@ -152,25 +156,27 @@ object WidgetRenderer {
         return views
     }
 
-    private fun applyData(views: RemoteViews, data: WidgetResponse, offline: Boolean) {
+    private fun applyData(context: Context, views: RemoteViews, data: WidgetResponse, offline: Boolean) {
         if (!data.success) {
-            views.setTextViewText(R.id.tv_total_assets, "خطا")
-            views.setTextViewText(R.id.tv_updated_at, data.message ?: "ناموفق")
+            FontHelper.setText(views, context, R.id.tv_total_assets, "خطا", bold = true)
+            FontHelper.setText(views, context, R.id.tv_updated_at, data.message ?: "ناموفق")
             return
         }
 
-        views.setTextViewText(R.id.tv_total_assets, NumberUtils.format(data.totalAssetsToman))
-        views.setTextViewText(R.id.tv_daily_buy, NumberUtils.format(data.dailyBuyToman))
+        FontHelper.setText(views, context, R.id.tv_total_assets, NumberUtils.format(data.totalAssetsToman), bold = true)
+        FontHelper.setText(views, context, R.id.tv_daily_buy, NumberUtils.format(data.dailyBuyToman), bold = true)
 
         val pnl = data.dailyProfitToman
         val pnlColor = if (pnl >= 0) Color.parseColor("#34D399") else Color.parseColor("#F87171")
-        views.setTextViewText(R.id.tv_daily_pnl, NumberUtils.formatSigned(pnl))
+        FontHelper.setText(views, context, R.id.tv_daily_pnl, NumberUtils.formatSigned(pnl), bold = true)
         views.setTextColor(R.id.tv_daily_pnl, pnlColor)
-        views.setTextViewText(R.id.tv_daily_pnl_pct, NumberUtils.formatPercent(data.dailyProfitPercent))
+        FontHelper.setText(views, context, R.id.tv_daily_pnl_pct, NumberUtils.formatPercent(data.dailyProfitPercent))
         views.setTextColor(R.id.tv_daily_pnl_pct, pnlColor)
 
         val stamp = data.updatedAt ?: ""
-        views.setTextViewText(
+        FontHelper.setText(
+            views,
+            context,
             R.id.tv_updated_at,
             if (offline) "آفلاین · $stamp" else stamp
         )
@@ -179,22 +185,22 @@ object WidgetRenderer {
             val slot = slots[i]
             if (i < data.items.size) {
                 views.setViewVisibility(slot.row, View.VISIBLE)
-                bindAsset(views, slot, data.items[i])
+                bindAsset(context, views, slot, data.items[i])
             } else {
                 views.setViewVisibility(slot.row, View.GONE)
             }
         }
     }
 
-    private fun bindAsset(views: RemoteViews, slot: AssetSlot, item: AssetItem) {
+    private fun bindAsset(context: Context, views: RemoteViews, slot: AssetSlot, item: AssetItem) {
         val name = item.coinName.ifBlank { item.symbol }.ifBlank { "-" }
         val positive = item.profitPercent >= 0
         val pctColor = if (positive) Color.parseColor("#34D399") else Color.parseColor("#F87171")
         val arrow = if (positive) " ↑" else " ↓"
 
-        views.setTextViewText(slot.name, name)
-        views.setTextViewText(slot.value, NumberUtils.format(item.currentValue))
-        views.setTextViewText(slot.pct, NumberUtils.formatPercent(item.profitPercent) + arrow)
+        FontHelper.setText(views, context, slot.name, name, bold = true)
+        FontHelper.setText(views, context, slot.value, NumberUtils.format(item.currentValue), bold = true)
+        FontHelper.setText(views, context, slot.pct, NumberUtils.formatPercent(item.profitPercent) + arrow, bold = true)
         views.setTextColor(slot.pct, pctColor)
         views.setInt(
             slot.pct,
