@@ -19,10 +19,13 @@ object WidgetRenderer {
     // Colors
     private val GOLD = Color.parseColor("#F5C542")
     private val WHITE = Color.parseColor("#F8FAFC")
-    private val MUTED = Color.parseColor("#A8B2C1")   // سفید کم‌رنگ برای هدر جدول
+    private val MUTED = Color.parseColor("#A8B2C1")
     private val SECONDARY = Color.parseColor("#94A3B8")
     private val POS = Color.parseColor("#34D399")
     private val NEG = Color.parseColor("#F87171")
+
+    /** یک اندازه برای کل جدول (هدر + ردیف دارایی‌ها) */
+    private const val TABLE_SP = 12f
 
     private data class AssetSlot(
         val row: Int,
@@ -30,21 +33,15 @@ object WidgetRenderer {
         val name: Int,
         val value: Int,
         val toman: Int,
-        val pct: Int,
-        val pctBg: Boolean // only used to pick badge drawable via parent — set on row container in layout
+        val pct: Int
     )
 
     private val slots = arrayOf(
-        AssetSlot(R.id.row_asset_1, R.id.iv_asset_1, R.id.iv_asset_1_name, R.id.iv_asset_1_value, R.id.iv_asset_1_toman, R.id.iv_asset_1_pct, true),
-        AssetSlot(R.id.row_asset_2, R.id.iv_asset_2, R.id.iv_asset_2_name, R.id.iv_asset_2_value, R.id.iv_asset_2_toman, R.id.iv_asset_2_pct, true),
-        AssetSlot(R.id.row_asset_3, R.id.iv_asset_3, R.id.iv_asset_3_name, R.id.iv_asset_3_value, R.id.iv_asset_3_toman, R.id.iv_asset_3_pct, true),
-        AssetSlot(R.id.row_asset_4, R.id.iv_asset_4, R.id.iv_asset_4_name, R.id.iv_asset_4_value, R.id.iv_asset_4_toman, R.id.iv_asset_4_pct, true),
-        AssetSlot(R.id.row_asset_5, R.id.iv_asset_5, R.id.iv_asset_5_name, R.id.iv_asset_5_value, R.id.iv_asset_5_toman, R.id.iv_asset_5_pct, true)
-    )
-
-    // Badge container ids (LinearLayout wrapping pct ImageView)
-    private val pctContainers = intArrayOf(
-        R.id.row_asset_1, // we'll set background on a dedicated approach — use setInt on pct parent
+        AssetSlot(R.id.row_asset_1, R.id.iv_asset_1, R.id.iv_asset_1_name, R.id.iv_asset_1_value, R.id.iv_asset_1_toman, R.id.iv_asset_1_pct),
+        AssetSlot(R.id.row_asset_2, R.id.iv_asset_2, R.id.iv_asset_2_name, R.id.iv_asset_2_value, R.id.iv_asset_2_toman, R.id.iv_asset_2_pct),
+        AssetSlot(R.id.row_asset_3, R.id.iv_asset_3, R.id.iv_asset_3_name, R.id.iv_asset_3_value, R.id.iv_asset_3_toman, R.id.iv_asset_3_pct),
+        AssetSlot(R.id.row_asset_4, R.id.iv_asset_4, R.id.iv_asset_4_name, R.id.iv_asset_4_value, R.id.iv_asset_4_toman, R.id.iv_asset_4_pct),
+        AssetSlot(R.id.row_asset_5, R.id.iv_asset_5, R.id.iv_asset_5_name, R.id.iv_asset_5_value, R.id.iv_asset_5_toman, R.id.iv_asset_5_pct)
     )
 
     fun allIds(context: Context): IntArray {
@@ -106,9 +103,9 @@ object WidgetRenderer {
         FontHelper.setTextBitmap(views, appCtx, R.id.iv_total_assets, "تنظیم نشده", 22f, GOLD, bold = true)
         FontHelper.setTextBitmap(views, appCtx, R.id.iv_updated_at, "اپ را باز کنید", 10f, MUTED)
         FontHelper.setTextBitmap(views, appCtx, R.id.iv_daily_pnl, "-", 14f, WHITE, bold = true)
-        FontHelper.setTextBitmap(views, appCtx, R.id.iv_daily_pnl_pct, "", 11f, MUTED)
+        FontHelper.setTextBitmap(views, appCtx, R.id.iv_daily_pnl_pct, "", TABLE_SP, MUTED)
         FontHelper.setTextBitmap(views, appCtx, R.id.iv_daily_buy, "-", 14f, WHITE, bold = true)
-        FontHelper.setTextBitmap(views, appCtx, R.id.iv_asset_1_name, "برای تنظیم روی ویجت بزنید", 12f, WHITE, bold = true, maxWidthDp = 120f)
+        FontHelper.setTextBitmap(views, appCtx, R.id.iv_asset_1_name, "برای تنظیم روی ویجت بزنید", TABLE_SP, WHITE, bold = true, maxWidthDp = 120f)
         for (i in 1 until slots.size) {
             views.setViewVisibility(slots[i].row, View.GONE)
         }
@@ -141,7 +138,6 @@ object WidgetRenderer {
     private fun baseViews(context: Context, widgetId: Int): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
 
-        // Static labels with Vazir bitmap
         FontHelper.setTextBitmap(views, context, R.id.iv_title, context.getString(R.string.widget_name), 16f, GOLD, bold = true)
         FontHelper.setTextBitmap(views, context, R.id.iv_label_total, context.getString(R.string.total_assets), 11f, SECONDARY)
         FontHelper.setTextBitmap(views, context, R.id.iv_label_toman_total, context.getString(R.string.toman), 10f, MUTED)
@@ -149,10 +145,10 @@ object WidgetRenderer {
         FontHelper.setTextBitmap(views, context, R.id.iv_label_buy, context.getString(R.string.daily_buy), 10f, MUTED)
         FontHelper.setTextBitmap(views, context, R.id.iv_label_toman_buy, context.getString(R.string.toman), 10f, MUTED)
 
-        // Table headers — سفید کم‌رنگ
-        FontHelper.setTextBitmap(views, context, R.id.iv_header_assets, context.getString(R.string.assets), 12f, MUTED, bold = true, align = FontHelper.Align.CENTER)
-        FontHelper.setTextBitmap(views, context, R.id.iv_header_value, context.getString(R.string.current_value), 11f, MUTED, align = FontHelper.Align.CENTER)
-        FontHelper.setTextBitmap(views, context, R.id.iv_header_pct, context.getString(R.string.change_percent), 11f, MUTED, align = FontHelper.Align.CENTER)
+        // هدر جدول — همه یک اندازه
+        FontHelper.setTextBitmap(views, context, R.id.iv_header_assets, context.getString(R.string.assets), TABLE_SP, MUTED, bold = true, align = FontHelper.Align.CENTER)
+        FontHelper.setTextBitmap(views, context, R.id.iv_header_value, context.getString(R.string.current_value), TABLE_SP, MUTED, bold = true, align = FontHelper.Align.CENTER)
+        FontHelper.setTextBitmap(views, context, R.id.iv_header_pct, context.getString(R.string.change_percent), TABLE_SP, MUTED, bold = true, align = FontHelper.Align.CENTER)
 
         val refreshIntent = Intent(context, SilentRefreshActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or
@@ -219,23 +215,15 @@ object WidgetRenderer {
         val pctColor = if (positive) POS else NEG
         val arrow = if (positive) " ↑" else " ↓"
 
-        FontHelper.setTextBitmap(views, context, slot.name, name, 12f, WHITE, bold = true, maxWidthDp = 100f)
-        FontHelper.setTextBitmap(views, context, slot.value, NumberUtils.format(item.currentValue), 12f, WHITE, bold = true, align = FontHelper.Align.CENTER)
-        FontHelper.setTextBitmap(views, context, slot.toman, context.getString(R.string.toman), 9f, MUTED, align = FontHelper.Align.CENTER)
+        // همه متن‌های ردیف دارایی = همان اندازه هدر جدول
+        FontHelper.setTextBitmap(views, context, slot.name, name, TABLE_SP, WHITE, bold = true, maxWidthDp = 100f)
+        FontHelper.setTextBitmap(views, context, slot.value, NumberUtils.format(item.currentValue), TABLE_SP, WHITE, bold = true, align = FontHelper.Align.CENTER)
+        FontHelper.setTextBitmap(views, context, slot.toman, context.getString(R.string.toman), TABLE_SP, MUTED, align = FontHelper.Align.CENTER)
         FontHelper.setTextBitmap(
             views, context, slot.pct,
             NumberUtils.formatPercent(item.profitPercent) + arrow,
-            11f, pctColor, bold = true, align = FontHelper.Align.CENTER
+            TABLE_SP, pctColor, bold = true, align = FontHelper.Align.CENTER
         )
-
-        // Badge background on the LinearLayout that wraps pct — use row's last child via setInt on known container
-        // Containers are the weight-0.9 LinearLayouts; we set background on parent of pct by using setInt on a wrapper.
-        // Layout uses badge on the LinearLayout parent of iv_asset_N_pct — set via reflection id not available.
-        // Instead set background on pct image's sibling container: we tagged them implicitly.
-        // Use setInt on the ImageView doesn't set parent bg. Re-set on known row structure:
-        // For simplicity badge drawables stay as default in XML; color of text is enough signal.
-        // Optionally update the wrapping LinearLayout — not exposed by id.
-        // Add ids for badge containers in a future pass; for now color is clear.
 
         views.setImageViewResource(slot.icon, iconForSymbol(item.symbol, item.coinName))
     }
