@@ -23,6 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            android:scaleType="fitStart"
             android:contentDescription="@string/widget_name" />
 
         <TextView
@@ -36,7 +37,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="6dp"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            android:scaleType="fitEnd" />
 
         <ImageView
             android:id="@+id/btn_refresh"
@@ -63,20 +65,23 @@
             android:id="@+id/iv_label_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart" />
 
         <ImageView
             android:id="@+id/iv_total_assets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart" />
 
         <ImageView
             android:id="@+id/iv_label_toman_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart" />
     </LinearLayout>
 
     <!-- Daily stats -->
@@ -99,20 +104,23 @@
                 android:id="@+id/iv_label_pnl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart" />
 
             <ImageView
                 android:id="@+id/iv_daily_pnl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart" />
 
             <ImageView
                 android:id="@+id/iv_daily_pnl_pct"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart" />
         </LinearLayout>
 
         <LinearLayout
@@ -128,24 +136,27 @@
                 android:id="@+id/iv_label_buy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart" />
 
             <ImageView
                 android:id="@+id/iv_daily_buy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart" />
 
             <ImageView
                 android:id="@+id/iv_label_toman_buy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Table header — muted white, centered columns, RTL -->
+    <!-- Table header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -161,12 +172,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
             android:gravity="center">
-
             <ImageView
                 android:id="@+id/iv_header_assets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -174,12 +185,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center">
-
             <ImageView
                 android:id="@+id/iv_header_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -187,12 +198,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:gravity="center">
-
             <ImageView
                 android:id="@+id/iv_header_pct"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="center" />
         </LinearLayout>
     </LinearLayout>
 
@@ -202,7 +213,7 @@
         android:layout_marginTop="4dp"
         android:background="@color/divider" />
 
-    <!-- Asset rows 1-5 -->
+    <!-- Row template: column containers take weight; text ImageViews are wrap_content so bitmap is NOT scaled -->
     <LinearLayout
         android:id="@+id/row_asset_1"
         android:layout_width="match_parent"
@@ -210,29 +221,29 @@
         android:gravity="center_vertical"
         android:layoutDirection="rtl"
         android:orientation="horizontal"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp">
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|start"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/iv_asset_1"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/ic_coin_default" />
 
             <ImageView
                 android:id="@+id/iv_asset_1_name"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart" />
         </LinearLayout>
 
         <LinearLayout
@@ -246,13 +257,15 @@
                 android:id="@+id/iv_asset_1_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="center" />
 
             <ImageView
                 android:id="@+id/iv_asset_1_toman"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -261,14 +274,15 @@
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp">
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp">
 
             <ImageView
                 android:id="@+id/iv_asset_1_pct"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="center" />
         </LinearLayout>
     </LinearLayout>
 
@@ -281,25 +295,17 @@
         android:gravity="center_vertical"
         android:layoutDirection="rtl"
         android:orientation="horizontal"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp">
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|start"
             android:orientation="horizontal">
-
-            <ImageView android:id="@+id/iv_asset_2" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_coin_default" />
-
-            <ImageView
-                android:id="@+id/iv_asset_2_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_2" android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_coin_default" />
+            <ImageView android:id="@+id/iv_asset_2_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="6dp" android:adjustViewBounds="true" android:scaleType="fitStart" />
         </LinearLayout>
 
         <LinearLayout
@@ -308,9 +314,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
-
-            <ImageView android:id="@+id/iv_asset_2_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
-            <ImageView android:id="@+id/iv_asset_2_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_2_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
+            <ImageView android:id="@+id/iv_asset_2_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -319,10 +324,9 @@
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_pos"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp">
-
-            <ImageView android:id="@+id/iv_asset_2_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp">
+            <ImageView android:id="@+id/iv_asset_2_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
         </LinearLayout>
     </LinearLayout>
 
@@ -335,25 +339,17 @@
         android:gravity="center_vertical"
         android:layoutDirection="rtl"
         android:orientation="horizontal"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp">
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|start"
             android:orientation="horizontal">
-
-            <ImageView android:id="@+id/iv_asset_3" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_coin_default" />
-
-            <ImageView
-                android:id="@+id/iv_asset_3_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_3" android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_coin_default" />
+            <ImageView android:id="@+id/iv_asset_3_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="6dp" android:adjustViewBounds="true" android:scaleType="fitStart" />
         </LinearLayout>
 
         <LinearLayout
@@ -362,9 +358,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
-
-            <ImageView android:id="@+id/iv_asset_3_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
-            <ImageView android:id="@+id/iv_asset_3_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_3_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
+            <ImageView android:id="@+id/iv_asset_3_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -373,10 +368,9 @@
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp">
-
-            <ImageView android:id="@+id/iv_asset_3_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp">
+            <ImageView android:id="@+id/iv_asset_3_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
         </LinearLayout>
     </LinearLayout>
 
@@ -389,25 +383,17 @@
         android:gravity="center_vertical"
         android:layoutDirection="rtl"
         android:orientation="horizontal"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp">
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|start"
             android:orientation="horizontal">
-
-            <ImageView android:id="@+id/iv_asset_4" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_coin_default" />
-
-            <ImageView
-                android:id="@+id/iv_asset_4_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_4" android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_coin_default" />
+            <ImageView android:id="@+id/iv_asset_4_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="6dp" android:adjustViewBounds="true" android:scaleType="fitStart" />
         </LinearLayout>
 
         <LinearLayout
@@ -416,9 +402,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
-
-            <ImageView android:id="@+id/iv_asset_4_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
-            <ImageView android:id="@+id/iv_asset_4_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_4_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
+            <ImageView android:id="@+id/iv_asset_4_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -427,10 +412,9 @@
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp">
-
-            <ImageView android:id="@+id/iv_asset_4_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp">
+            <ImageView android:id="@+id/iv_asset_4_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
         </LinearLayout>
     </LinearLayout>
 
@@ -443,25 +427,17 @@
         android:gravity="center_vertical"
         android:layoutDirection="rtl"
         android:orientation="horizontal"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp">
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|start"
             android:orientation="horizontal">
-
-            <ImageView android:id="@+id/iv_asset_5" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_coin_default" />
-
-            <ImageView
-                android:id="@+id/iv_asset_5_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_5" android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_coin_default" />
+            <ImageView android:id="@+id/iv_asset_5_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="6dp" android:adjustViewBounds="true" android:scaleType="fitStart" />
         </LinearLayout>
 
         <LinearLayout
@@ -470,9 +446,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
-
-            <ImageView android:id="@+id/iv_asset_5_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
-            <ImageView android:id="@+id/iv_asset_5_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_5_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
+            <ImageView android:id="@+id/iv_asset_5_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -481,10 +456,9 @@
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_pos"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp">
-
-            <ImageView android:id="@+id/iv_asset_5_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp">
+            <ImageView android:id="@+id/iv_asset_5_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
         </LinearLayout>
     </LinearLayout>
 
