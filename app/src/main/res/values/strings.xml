@@ -22,4 +22,17 @@
     <string name="connection_success">✅ اتصال موفقیت‌آمیز بود</string>
     <string name="connection_failed">❌ خطا در اتصال: %s</string>
     <string name="note">توکن را از تابع generateWidgetToken در Apps Script بگیرید</string>
+    <string name="refresh_interval">فاصله به‌روزرسانی خودکار</string>
+    <string name="interval_15">هر ۱۵ دقیقه</string>
+    <string name="interval_30">هر ۳۰ دقیقه</string>
+    <string name="interval_60">هر ۱ ساعت</string>
+    <string name="interval_120">هر ۲ ساعت</string>
+    <string name="interval_manual">فقط دستی (بدون خودکار)</string>
+    <string-array name="refresh_interval_labels">
+        <item>@string/interval_15</item>
+        <item>@string/interval_30</item>
+        <item>@string/interval_60</item>
+        <item>@string/interval_120</item>
+        <item>@string/interval_manual</item>
+    </string-array>
 </resources>

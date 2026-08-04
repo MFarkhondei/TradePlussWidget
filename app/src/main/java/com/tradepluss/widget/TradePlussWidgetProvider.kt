@@ -16,6 +16,7 @@ class TradePlussWidgetProvider : AppWidgetProvider() {
 
     companion object {
         const val ACTION_REFRESH = "com.tradepluss.widget.ACTION_REFRESH"
+        const val ACTION_AUTO_UPDATE = "com.tradepluss.widget.ACTION_AUTO_UPDATE"
         private val executor = Executors.newSingleThreadExecutor()
         private val gson = Gson()
 
@@ -24,14 +25,12 @@ class TradePlussWidgetProvider : AppWidgetProvider() {
             val mgr = AppWidgetManager.getInstance(appCtx)
             val ids = mgr.getAppWidgetIds(ComponentName(appCtx, TradePlussWidgetProvider::class.java))
             if (ids.isEmpty()) return
-            val intent = Intent(appCtx, TradePlussWidgetProvider::class.java).apply {
-                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+            for (id in ids) {
+                // Direct call avoids broadcast race on some Samsung devices
+                renderStatic(appCtx, mgr, id, forceNetwork = true)
             }
-            appCtx.sendBroadcast(intent)
         }
 
-        /** Push already-fetched data into all widgets (used after successful config test). */
         fun applyCachedToAll(context: Context) {
             val appCtx = context.applicationContext
             val json = Prefs.getCacheJson(appCtx) ?: return
@@ -44,25 +43,30 @@ class TradePlussWidgetProvider : AppWidgetProvider() {
             val ids = mgr.getAppWidgetIds(ComponentName(appCtx, TradePlussWidgetProvider::class.java))
             for (id in ids) {
                 val views = RemoteViews(appCtx.packageName, R.layout.widget_layout)
-                wireClicks(appCtx, views)
+                wireClicks(appCtx, views, id)
                 applyData(views, data, offline = false)
                 mgr.updateAppWidget(id, views)
             }
         }
 
-        private fun wireClicks(context: Context, views: RemoteViews) {
+        private fun wireClicks(context: Context, views: RemoteViews, widgetId: Int) {
             val refreshIntent = Intent(context, TradePlussWidgetProvider::class.java).apply {
                 action = ACTION_REFRESH
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
             }
             val refreshPi = PendingIntent.getBroadcast(
-                context, 100, refreshIntent,
+                context,
+                1000 + widgetId,
+                refreshIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.btn_refresh, refreshPi)
 
             val cfgIntent = Intent(context, ConfigActivity::class.java)
             val cfgPi = PendingIntent.getActivity(
-                context, 101, cfgIntent,
+                context,
+                2000 + widgetId,
+                cfgIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_root, cfgPi)
@@ -109,94 +113,145 @@ class TradePlussWidgetProvider : AppWidgetProvider() {
                 }
             }
         }
+
+        fun renderStatic(
+            context: Context,
+            manager: AppWidgetManager,
+            widgetId: Int,
+            forceNetwork: Boolean
+        ) {
+            val views = RemoteViews(context.packageName, R.layout.widget_layout)
+            wireClicks(context, views, widgetId)
+
+            if (!Prefs.isConfigured(context)) {
+                views.setTextViewText(R.id.tv_total_assets, "تنظیم نشده")
+                views.setTextViewText(R.id.tv_updated_at, "اپ را باز کنید")
+                views.setTextViewText(R.id.tv_daily_pnl, "-")
+                views.setTextViewText(R.id.tv_daily_pnl_pct, "")
+                views.setTextViewText(R.id.tv_daily_buy, "-")
+                views.setTextViewText(R.id.tv_asset_1, "برای تنظیم روی ویجت بزنید")
+                manager.updateAppWidget(widgetId, views)
+                return
+            }
+
+            // Immediate feedback on manual refresh
+            if (forceNetwork) {
+                views.setTextViewText(R.id.tv_updated_at, "در حال بروزرسانی...")
+                manager.updateAppWidget(widgetId, views)
+            } else {
+                val cachedJson = Prefs.getCacheJson(context)
+                if (!cachedJson.isNullOrBlank()) {
+                    try {
+                        val cached = gson.fromJson(cachedJson, WidgetResponse::class.java)
+                        if (cached != null && cached.success) {
+                            applyData(views, cached, offline = true)
+                            manager.updateAppWidget(widgetId, views)
+                        }
+                    } catch (_: Exception) {
+                    }
+                } else {
+                    views.setTextViewText(R.id.tv_total_assets, "...")
+                    views.setTextViewText(R.id.tv_updated_at, "در حال بارگذاری")
+                    manager.updateAppWidget(widgetId, views)
+                }
+            }
+
+            executor.execute {
+                try {
+                    val (data, raw) = ApiClient.fetchWidgetData(
+                        Prefs.getUrl(context),
+                        Prefs.getUser(context),
+                        Prefs.getToken(context)
+                    )
+                    if (data.success) {
+                        Prefs.saveCache(context, raw)
+                    }
+                    val ready = RemoteViews(context.packageName, R.layout.widget_layout)
+                    wireClicks(context, ready, widgetId)
+                    applyData(ready, data, offline = false)
+                    manager.updateAppWidget(widgetId, ready)
+                } catch (e: Exception) {
+                    val hasCache = !Prefs.getCacheJson(context).isNullOrBlank()
+                    if (!hasCache || forceNetwork) {
+                        // On forced refresh failure, still try to show cache with offline label
+                        val cachedJson = Prefs.getCacheJson(context)
+                        if (!cachedJson.isNullOrBlank()) {
+                            try {
+                                val cached = gson.fromJson(cachedJson, WidgetResponse::class.java)
+                                if (cached != null && cached.success) {
+                                    val offlineViews =
+                                        RemoteViews(context.packageName, R.layout.widget_layout)
+                                    wireClicks(context, offlineViews, widgetId)
+                                    applyData(offlineViews, cached, offline = true)
+                                    manager.updateAppWidget(widgetId, offlineViews)
+                                    return@execute
+                                }
+                            } catch (_: Exception) {
+                            }
+                        }
+                        val err = RemoteViews(context.packageName, R.layout.widget_layout)
+                        wireClicks(context, err, widgetId)
+                        err.setTextViewText(R.id.tv_total_assets, "خطا")
+                        val msg = (e.message ?: "شبکه").replace("\n", " ")
+                        err.setTextViewText(R.id.tv_updated_at, msg.take(40))
+                        manager.updateAppWidget(widgetId, err)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onEnabled(context: Context) {
+        UpdateScheduler.schedule(context)
+    }
+
+    override fun onDisabled(context: Context) {
+        UpdateScheduler.cancel(context)
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        UpdateScheduler.schedule(context)
         for (id in appWidgetIds) {
-            render(context.applicationContext, appWidgetManager, id)
+            renderStatic(context.applicationContext, appWidgetManager, id, forceNetwork = false)
         }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == ACTION_REFRESH || intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
-            val appCtx = context.applicationContext
-            val mgr = AppWidgetManager.getInstance(appCtx)
-            val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
-                ?: mgr.getAppWidgetIds(ComponentName(appCtx, TradePlussWidgetProvider::class.java))
-            for (id in ids) {
-                render(appCtx, mgr, id)
-            }
-        }
-    }
+        val action = intent.action ?: return
+        val appCtx = context.applicationContext
+        val mgr = AppWidgetManager.getInstance(appCtx)
 
-    private fun render(context: Context, manager: AppWidgetManager, widgetId: Int) {
-        val views = RemoteViews(context.packageName, R.layout.widget_layout)
-        wireClicks(context, views)
-
-        if (!Prefs.isConfigured(context)) {
-            views.setTextViewText(R.id.tv_total_assets, "تنظیم نشده")
-            views.setTextViewText(R.id.tv_updated_at, "اپ را باز کنید")
-            views.setTextViewText(R.id.tv_daily_pnl, "-")
-            views.setTextViewText(R.id.tv_daily_pnl_pct, "")
-            views.setTextViewText(R.id.tv_daily_buy, "-")
-            views.setTextViewText(R.id.tv_asset_1, "برای تنظیم روی ویجت بزنید")
-            manager.updateAppWidget(widgetId, views)
-            return
-        }
-
-        // Show cache immediately while loading
-        val cachedJson = Prefs.getCacheJson(context)
-        if (!cachedJson.isNullOrBlank()) {
-            try {
-                val cached = gson.fromJson(cachedJson, WidgetResponse::class.java)
-                if (cached != null && cached.success) {
-                    applyData(views, cached, offline = true)
-                    manager.updateAppWidget(widgetId, views)
-                }
-            } catch (_: Exception) {
-            }
-        } else {
-            views.setTextViewText(R.id.tv_total_assets, "...")
-            views.setTextViewText(R.id.tv_updated_at, "در حال بارگذاری")
-            manager.updateAppWidget(widgetId, views)
-        }
-
-        executor.execute {
-            try {
-                val (data, raw) = ApiClient.fetchWidgetData(
-                    Prefs.getUrl(context),
-                    Prefs.getUser(context),
-                    Prefs.getToken(context)
+        when (action) {
+            ACTION_REFRESH -> {
+                val id = intent.getIntExtra(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID
                 )
-                if (data.success) {
-                    Prefs.saveCache(context, raw)
+                val ids = if (id != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    intArrayOf(id)
+                } else {
+                    mgr.getAppWidgetIds(ComponentName(appCtx, TradePlussWidgetProvider::class.java))
                 }
-                val ready = RemoteViews(context.packageName, R.layout.widget_layout)
-                wireClicks(context, ready)
-                applyData(ready, data, offline = false)
-                manager.updateAppWidget(widgetId, ready)
-            } catch (e: Exception) {
-                // Keep cache on screen if we have it; only show error if no cache
-                val hasCache = !Prefs.getCacheJson(context).isNullOrBlank()
-                if (!hasCache) {
-                    val err = RemoteViews(context.packageName, R.layout.widget_layout)
-                    wireClicks(context, err)
-                    err.setTextViewText(R.id.tv_total_assets, "خطا")
-                    val msg = (e.message ?: "شبکه").replace("\n", " ")
-                    err.setTextViewText(R.id.tv_updated_at, msg.take(40))
-                    manager.updateAppWidget(widgetId, err)
+                for (wid in ids) {
+                    renderStatic(appCtx, mgr, wid, forceNetwork = true)
                 }
-                // if hasCache: leave the offline-labeled cache already shown
+            }
+            ACTION_AUTO_UPDATE -> {
+                val ids = mgr.getAppWidgetIds(ComponentName(appCtx, TradePlussWidgetProvider::class.java))
+                for (wid in ids) {
+                    renderStatic(appCtx, mgr, wid, forceNetwork = true)
+                }
+                // Chain next alarm
+                UpdateScheduler.reschedule(appCtx)
+            }
+            AppWidgetManager.ACTION_APPWIDGET_UPDATE -> {
+                val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
+                    ?: mgr.getAppWidgetIds(ComponentName(appCtx, TradePlussWidgetProvider::class.java))
+                for (wid in ids) {
+                    renderStatic(appCtx, mgr, wid, forceNetwork = true)
+                }
             }
         }
-    }
-
-    private fun wireClicks(context: Context, views: RemoteViews) {
-        Companion.wireClicks(context, views)
-    }
-
-    private fun applyData(views: RemoteViews, data: WidgetResponse, offline: Boolean) {
-        Companion.applyData(views, data, offline)
     }
 }
