@@ -32,7 +32,7 @@ object ApiClient {
 
         var lastError: Exception? = null
         // Retry up to 3 times — DNS on mobile networks is flaky
-        repeat(3) { attempt ->
+        for (attempt in 0 until 3) {
             try {
                 val body = httpGet(fullUrl)
                 val parsed = gson.fromJson(body, WidgetResponse::class.java)
@@ -51,8 +51,8 @@ object ApiClient {
 
     private fun httpGet(urlStr: String): String {
         var current = urlStr
-        // Follow redirects manually (Apps Script -> googleusercontent)
-        repeat(6) {
+        var redirects = 0
+        while (redirects < 6) {
             val url = URL(current)
             val conn = (url.openConnection() as HttpURLConnection).apply {
                 instanceFollowRedirects = false
@@ -68,13 +68,15 @@ object ApiClient {
                 if (code in 300..399) {
                     val loc = conn.getHeaderField("Location")
                         ?: throw Exception("ریدایرکت بدون Location")
-                    current = if (loc.startsWith("http")) loc else {
-                        URL(url, loc).toString()
-                    }
+                    current = if (loc.startsWith("http")) loc else URL(url, loc).toString()
+                    redirects++
                     continue
                 }
-                val stream = if (code in 200..299) conn.inputStream else conn.errorStream
-                    ?: throw Exception("خطای HTTP $code")
+                val stream = if (code in 200..299) {
+                    conn.inputStream
+                } else {
+                    conn.errorStream ?: throw Exception("خطای HTTP $code")
+                }
                 val body = BufferedReader(InputStreamReader(stream, StandardCharsets.UTF_8)).use { it.readText() }
                 if (code !in 200..299) {
                     throw Exception("خطای HTTP $code")
