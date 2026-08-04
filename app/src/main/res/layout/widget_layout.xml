@@ -10,17 +10,19 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-    <!-- Header -->
+    <!-- Header: title on visual LEFT -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layoutDirection="ltr"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="start|center_vertical"
             android:text="@string/widget_name"
             android:textColor="@color/accent_gold"
             android:textSize="16sp"
@@ -155,20 +157,28 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Assets table header -->
+    <!--
+      Table uses RTL so:
+        RIGHT = name (first child)
+        CENTER = value
+        LEFT = profit/loss (last child)
+      Headers centered in each column.
+    -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
+        android:layoutDirection="rtl"
         android:orientation="horizontal"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp">
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.3"
+            android:layout_weight="1.2"
+            android:gravity="center"
             android:text="@string/assets"
             android:textColor="@color/accent_gold"
             android:textSize="12sp"
@@ -186,48 +196,57 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.85"
-            android:gravity="end"
+            android:layout_weight="0.9"
+            android:gravity="center"
             android:text="@string/change_percent"
             android:textColor="@color/text_muted"
             android:textSize="11sp" />
     </LinearLayout>
 
-    <!-- Divider -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
         android:background="@color/divider" />
 
-    <!-- Row 1 -->
+    <!-- Row 1: RIGHT name | CENTER value | LEFT pct -->
     <LinearLayout
         android:id="@+id/row_asset_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layoutDirection="rtl"
         android:orientation="horizontal"
         android:paddingTop="6dp"
         android:paddingBottom="6dp">
 
-        <ImageView
-            android:id="@+id/iv_asset_1"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/ic_coin_default" />
-
-        <TextView
-            android:id="@+id/tv_asset_1_name"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1.05"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="-"
-            android:textColor="@color/text_primary"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_weight="1.2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_asset_1"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_coin_default" />
+
+            <TextView
+                android:id="@+id/tv_asset_1_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:maxLines="1"
+                android:text="-"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -259,7 +278,7 @@
             android:id="@+id/tv_asset_1_pct"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.85"
+            android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
             android:gravity="center"
             android:paddingTop="3dp"
@@ -281,28 +300,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layoutDirection="rtl"
         android:orientation="horizontal"
         android:paddingTop="6dp"
         android:paddingBottom="6dp">
 
-        <ImageView
-            android:id="@+id/iv_asset_2"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/ic_coin_default" />
-
-        <TextView
-            android:id="@+id/tv_asset_2_name"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1.05"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text=""
-            android:textColor="@color/text_primary"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_weight="1.2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_asset_2"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_coin_default" />
+
+            <TextView
+                android:id="@+id/tv_asset_2_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -334,7 +363,7 @@
             android:id="@+id/tv_asset_2_pct"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.85"
+            android:layout_weight="0.9"
             android:background="@drawable/bg_badge_pos"
             android:gravity="center"
             android:paddingTop="3dp"
@@ -356,28 +385,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layoutDirection="rtl"
         android:orientation="horizontal"
         android:paddingTop="6dp"
         android:paddingBottom="6dp">
 
-        <ImageView
-            android:id="@+id/iv_asset_3"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/ic_coin_default" />
-
-        <TextView
-            android:id="@+id/tv_asset_3_name"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1.05"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text=""
-            android:textColor="@color/text_primary"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_weight="1.2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_asset_3"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_coin_default" />
+
+            <TextView
+                android:id="@+id/tv_asset_3_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -409,7 +448,7 @@
             android:id="@+id/tv_asset_3_pct"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.85"
+            android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
             android:gravity="center"
             android:paddingTop="3dp"
@@ -431,28 +470,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layoutDirection="rtl"
         android:orientation="horizontal"
         android:paddingTop="6dp"
         android:paddingBottom="6dp">
 
-        <ImageView
-            android:id="@+id/iv_asset_4"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/ic_coin_default" />
-
-        <TextView
-            android:id="@+id/tv_asset_4_name"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1.05"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text=""
-            android:textColor="@color/text_primary"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_weight="1.2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_asset_4"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_coin_default" />
+
+            <TextView
+                android:id="@+id/tv_asset_4_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -484,7 +533,7 @@
             android:id="@+id/tv_asset_4_pct"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.85"
+            android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
             android:gravity="center"
             android:paddingTop="3dp"
@@ -506,28 +555,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layoutDirection="rtl"
         android:orientation="horizontal"
         android:paddingTop="6dp"
         android:paddingBottom="6dp">
 
-        <ImageView
-            android:id="@+id/iv_asset_5"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/ic_coin_default" />
-
-        <TextView
-            android:id="@+id/tv_asset_5_name"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1.05"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text=""
-            android:textColor="@color/text_primary"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_weight="1.2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_asset_5"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_coin_default" />
+
+            <TextView
+                android:id="@+id/tv_asset_5_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -559,7 +618,7 @@
             android:id="@+id/tv_asset_5_pct"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.85"
+            android:layout_weight="0.9"
             android:background="@drawable/bg_badge_pos"
             android:gravity="center"
             android:paddingTop="3dp"
