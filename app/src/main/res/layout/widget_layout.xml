@@ -10,10 +10,7 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-    <!--
-      Header forced LTR:
-      [LEFT] ترید پلاس ........ time  refresh [RIGHT]
-    -->
+    <!-- Header LTR: title LEFT -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,33 +18,25 @@
         android:layoutDirection="ltr"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_title"
+        <ImageView
+            android:id="@+id/iv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/vazirmatn"
-            android:text="@string/widget_name"
-            android:textAlignment="viewStart"
-            android:textColor="@color/accent_gold"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/widget_name" />
 
-        <!-- spacer -->
         <TextView
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
             android:text="" />
 
-        <TextView
-            android:id="@+id/tv_updated_at"
+        <ImageView
+            android:id="@+id/iv_updated_at"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="6dp"
-            android:fontFamily="@font/vazirmatn"
-            android:text="--"
-            android:textColor="@color/text_muted"
-            android:textSize="10sp" />
+            android:adjustViewBounds="true" />
 
         <ImageView
             android:id="@+id/btn_refresh"
@@ -70,31 +59,24 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 
-        <TextView
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/iv_label_total"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/vazirmatn"
-            android:text="@string/total_assets"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp" />
+            android:adjustViewBounds="true" />
 
-        <TextView
-            android:id="@+id/tv_total_assets"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/iv_total_assets"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/vazirmatn"
-            android:text="۰"
-            android:textColor="@color/accent_gold"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="2dp"
+            android:adjustViewBounds="true" />
 
-        <TextView
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/iv_label_toman_total"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/vazirmatn"
-            android:text="@string/toman"
-            android:textColor="@color/text_muted"
-            android:textSize="10sp" />
+            android:adjustViewBounds="true" />
     </LinearLayout>
 
     <!-- Daily stats -->
@@ -113,32 +95,24 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iv_label_pnl"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:text="@string/daily_pnl"
-                android:textColor="@color/text_muted"
-                android:textSize="10sp" />
+                android:adjustViewBounds="true" />
 
-            <TextView
-                android:id="@+id/tv_daily_pnl"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iv_daily_pnl"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:text="۰"
-                android:textColor="@color/negative"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="2dp"
+                android:adjustViewBounds="true" />
 
-            <TextView
-                android:id="@+id/tv_daily_pnl_pct"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iv_daily_pnl_pct"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:text="(۰%)"
-                android:textColor="@color/negative"
-                android:textSize="11sp" />
+                android:adjustViewBounds="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -150,35 +124,28 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iv_label_buy"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:text="@string/daily_buy"
-                android:textColor="@color/text_muted"
-                android:textSize="10sp" />
+                android:adjustViewBounds="true" />
 
-            <TextView
-                android:id="@+id/tv_daily_buy"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iv_daily_buy"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:text="۰"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="2dp"
+                android:adjustViewBounds="true" />
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iv_label_toman_buy"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:text="@string/toman"
-                android:textColor="@color/text_muted"
-                android:textSize="10sp" />
+                android:adjustViewBounds="true" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Table header: RTL → RIGHT name | CENTER value | LEFT pct ; titles centered -->
+    <!-- Table header — muted white, centered columns, RTL -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -189,36 +156,44 @@
         android:paddingStart="2dp"
         android:paddingEnd="2dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
-            android:fontFamily="@font/vazirmatn"
-            android:gravity="center"
-            android:text="@string/assets"
-            android:textColor="@color/accent_gold"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:gravity="center">
 
-        <TextView
+            <ImageView
+                android:id="@+id/iv_header_assets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="@font/vazirmatn"
-            android:gravity="center"
-            android:text="@string/current_value"
-            android:textColor="@color/text_muted"
-            android:textSize="11sp" />
+            android:gravity="center">
 
-        <TextView
+            <ImageView
+                android:id="@+id/iv_header_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
-            android:fontFamily="@font/vazirmatn"
-            android:gravity="center"
-            android:text="@string/change_percent"
-            android:textColor="@color/text_muted"
-            android:textSize="11sp" />
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_header_pct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
@@ -227,7 +202,7 @@
         android:layout_marginTop="4dp"
         android:background="@color/divider" />
 
-    <!-- Row 1 -->
+    <!-- Asset rows 1-5 -->
     <LinearLayout
         android:id="@+id/row_asset_1"
         android:layout_width="match_parent"
@@ -251,20 +226,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_coin_default" />
 
-            <TextView
-                android:id="@+id/tv_asset_1_name"
+            <ImageView
+                android:id="@+id/iv_asset_1_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:ellipsize="end"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="start|center_vertical"
-                android:maxLines="1"
-                android:text="-"
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:adjustViewBounds="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -274,49 +242,38 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_asset_1_value"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iv_asset_1_value"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text="۰"
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:adjustViewBounds="true" />
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iv_asset_1_toman"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text="@string/toman"
-                android:textColor="@color/text_muted"
-                android:textSize="9sp" />
+                android:adjustViewBounds="true" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_asset_1_pct"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
-            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:text="0%"
-            android:textColor="@color/negative"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:paddingBottom="3dp">
+
+            <ImageView
+                android:id="@+id/iv_asset_1_pct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
+        </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
+    <TextView android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" />
 
-    <!-- Row 2 -->
     <LinearLayout
         android:id="@+id/row_asset_2"
         android:layout_width="match_parent"
@@ -334,26 +291,15 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_asset_2"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_coin_default" />
+            <ImageView android:id="@+id/iv_asset_2" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_coin_default" />
 
-            <TextView
-                android:id="@+id/tv_asset_2_name"
+            <ImageView
+                android:id="@+id/iv_asset_2_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:ellipsize="end"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="start|center_vertical"
-                android:maxLines="1"
-                android:text=""
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:adjustViewBounds="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -363,49 +309,25 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_asset_2_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text="@string/toman"
-                android:textColor="@color/text_muted"
-                android:textSize="9sp" />
+            <ImageView android:id="@+id/iv_asset_2_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_2_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_asset_2_pct"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_pos"
-            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:text=""
-            android:textColor="@color/positive"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:paddingBottom="3dp">
+
+            <ImageView android:id="@+id/iv_asset_2_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+        </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
+    <TextView android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" />
 
-    <!-- Row 3 -->
     <LinearLayout
         android:id="@+id/row_asset_3"
         android:layout_width="match_parent"
@@ -423,26 +345,15 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_asset_3"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_coin_default" />
+            <ImageView android:id="@+id/iv_asset_3" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_coin_default" />
 
-            <TextView
-                android:id="@+id/tv_asset_3_name"
+            <ImageView
+                android:id="@+id/iv_asset_3_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:ellipsize="end"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="start|center_vertical"
-                android:maxLines="1"
-                android:text=""
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:adjustViewBounds="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -452,49 +363,25 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_asset_3_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text="@string/toman"
-                android:textColor="@color/text_muted"
-                android:textSize="9sp" />
+            <ImageView android:id="@+id/iv_asset_3_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_3_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_asset_3_pct"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
-            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:text=""
-            android:textColor="@color/negative"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:paddingBottom="3dp">
+
+            <ImageView android:id="@+id/iv_asset_3_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+        </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
+    <TextView android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" />
 
-    <!-- Row 4 -->
     <LinearLayout
         android:id="@+id/row_asset_4"
         android:layout_width="match_parent"
@@ -512,26 +399,15 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_asset_4"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_coin_default" />
+            <ImageView android:id="@+id/iv_asset_4" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_coin_default" />
 
-            <TextView
-                android:id="@+id/tv_asset_4_name"
+            <ImageView
+                android:id="@+id/iv_asset_4_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:ellipsize="end"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="start|center_vertical"
-                android:maxLines="1"
-                android:text=""
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:adjustViewBounds="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -541,49 +417,25 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_asset_4_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text="@string/toman"
-                android:textColor="@color/text_muted"
-                android:textSize="9sp" />
+            <ImageView android:id="@+id/iv_asset_4_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_4_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_asset_4_pct"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
-            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:text=""
-            android:textColor="@color/negative"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:paddingBottom="3dp">
+
+            <ImageView android:id="@+id/iv_asset_4_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+        </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
+    <TextView android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" />
 
-    <!-- Row 5 -->
     <LinearLayout
         android:id="@+id/row_asset_5"
         android:layout_width="match_parent"
@@ -601,26 +453,15 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_asset_5"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_coin_default" />
+            <ImageView android:id="@+id/iv_asset_5" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_coin_default" />
 
-            <TextView
-                android:id="@+id/tv_asset_5_name"
+            <ImageView
+                android:id="@+id/iv_asset_5_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:ellipsize="end"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="start|center_vertical"
-                android:maxLines="1"
-                android:text=""
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:adjustViewBounds="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -630,41 +471,21 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_asset_5_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/vazirmatn"
-                android:gravity="center"
-                android:text="@string/toman"
-                android:textColor="@color/text_muted"
-                android:textSize="9sp" />
+            <ImageView android:id="@+id/iv_asset_5_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+            <ImageView android:id="@+id/iv_asset_5_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_asset_5_pct"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_pos"
-            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:text=""
-            android:textColor="@color/positive"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:paddingBottom="3dp">
+
+            <ImageView android:id="@+id/iv_asset_5_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
