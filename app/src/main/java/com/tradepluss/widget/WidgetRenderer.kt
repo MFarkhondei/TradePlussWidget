@@ -24,7 +24,7 @@ object WidgetRenderer {
     private val NEG = Color.parseColor("#F87171")
 
     /** اندازه یکسان هدر جدول + نام/ارزش/درصد دارایی */
-    private const val TABLE_SP = 11f
+    private const val TABLE_SP = 13f
 
     private data class AssetSlot(
         val row: Int,
@@ -54,7 +54,7 @@ object WidgetRenderer {
         val ids = widgetIds ?: allIds(appCtx)
         for (id in ids) {
             val views = baseViews(appCtx, id)
-            FontHelper.setTextBitmap(views, appCtx, R.id.iv_updated_at, "در حال بروزرسانی...", 10f, MUTED)
+            FontHelper.setTextBitmap(views, appCtx, R.id.iv_updated_at, "در حال بروزرسانی...", 11f, MUTED)
             mgr.updateAppWidget(id, views)
         }
     }
@@ -89,8 +89,8 @@ object WidgetRenderer {
         if (applyCache(appCtx, offline = true, widgetIds = ids)) return
         for (id in ids) {
             val views = baseViews(appCtx, id)
-            FontHelper.setTextBitmap(views, appCtx, R.id.iv_total_assets, "خطا", 22f, GOLD, bold = true)
-            FontHelper.setTextBitmap(views, appCtx, R.id.iv_updated_at, message.replace("\n", " ").take(40), 10f, MUTED)
+            FontHelper.setTextBitmap(views, appCtx, R.id.iv_total_assets, "خطا", 26f, GOLD, bold = true)
+            FontHelper.setTextBitmap(views, appCtx, R.id.iv_updated_at, message.replace("\n", " ").take(40), 11f, MUTED)
             mgr.updateAppWidget(id, views)
         }
     }
@@ -99,12 +99,12 @@ object WidgetRenderer {
         val appCtx = context.applicationContext
         val mgr = AppWidgetManager.getInstance(appCtx)
         val views = baseViews(appCtx, widgetId)
-        FontHelper.setTextBitmap(views, appCtx, R.id.iv_total_assets, "تنظیم نشده", 20f, GOLD, bold = true)
-        FontHelper.setTextBitmap(views, appCtx, R.id.iv_updated_at, "اپ را باز کنید", 10f, MUTED)
-        FontHelper.setTextBitmap(views, appCtx, R.id.iv_daily_pnl, "-", 13f, WHITE, bold = true)
+        FontHelper.setTextBitmap(views, appCtx, R.id.iv_total_assets, "تنظیم نشده", 24f, GOLD, bold = true)
+        FontHelper.setTextBitmap(views, appCtx, R.id.iv_updated_at, "اپ را باز کنید", 11f, MUTED)
+        FontHelper.setTextBitmap(views, appCtx, R.id.iv_daily_pnl, "-", 15f, WHITE, bold = true)
         FontHelper.setTextBitmap(views, appCtx, R.id.iv_daily_pnl_pct, "", TABLE_SP, MUTED)
-        FontHelper.setTextBitmap(views, appCtx, R.id.iv_daily_buy, "-", 13f, WHITE, bold = true)
-        FontHelper.setTextBitmap(views, appCtx, R.id.iv_asset_1_name, "برای تنظیم روی ویجت بزنید", TABLE_SP, WHITE, bold = true, maxWidthDp = 120f)
+        FontHelper.setTextBitmap(views, appCtx, R.id.iv_daily_buy, "-", 15f, WHITE, bold = true)
+        FontHelper.setTextBitmap(views, appCtx, R.id.iv_asset_1_name, "برای تنظیم روی ویجت بزنید", TABLE_SP, WHITE, bold = true, maxWidthDp = 140f)
         for (i in 1 until slots.size) {
             views.setViewVisibility(slots[i].row, View.GONE)
         }
@@ -137,14 +137,13 @@ object WidgetRenderer {
     private fun baseViews(context: Context, widgetId: Int): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
 
-        FontHelper.setTextBitmap(views, context, R.id.iv_title, context.getString(R.string.widget_name), 15f, GOLD, bold = true)
-        FontHelper.setTextBitmap(views, context, R.id.iv_label_total, context.getString(R.string.total_assets), 11f, SECONDARY)
-        FontHelper.setTextBitmap(views, context, R.id.iv_label_toman_total, context.getString(R.string.toman), 10f, MUTED)
-        FontHelper.setTextBitmap(views, context, R.id.iv_label_pnl, context.getString(R.string.daily_pnl), 10f, MUTED)
-        FontHelper.setTextBitmap(views, context, R.id.iv_label_buy, context.getString(R.string.daily_buy), 10f, MUTED)
-        FontHelper.setTextBitmap(views, context, R.id.iv_label_toman_buy, context.getString(R.string.toman), 10f, MUTED)
+        FontHelper.setTextBitmap(views, context, R.id.iv_title, context.getString(R.string.widget_name), 18f, GOLD, bold = true)
+        FontHelper.setTextBitmap(views, context, R.id.iv_label_total, context.getString(R.string.total_assets), 13f, SECONDARY)
+        FontHelper.setTextBitmap(views, context, R.id.iv_label_toman_total, context.getString(R.string.toman), 12f, MUTED)
+        FontHelper.setTextBitmap(views, context, R.id.iv_label_pnl, context.getString(R.string.daily_pnl), 12f, MUTED)
+        FontHelper.setTextBitmap(views, context, R.id.iv_label_buy, context.getString(R.string.daily_buy), 12f, MUTED)
+        FontHelper.setTextBitmap(views, context, R.id.iv_label_toman_buy, context.getString(R.string.toman), 12f, MUTED)
 
-        // هدر جدول — همان اندازه ردیف‌ها
         FontHelper.setTextBitmap(views, context, R.id.iv_header_assets, context.getString(R.string.assets), TABLE_SP, MUTED, bold = true, align = FontHelper.Align.CENTER)
         FontHelper.setTextBitmap(views, context, R.id.iv_header_value, context.getString(R.string.current_value), TABLE_SP, MUTED, bold = true, align = FontHelper.Align.CENTER)
         FontHelper.setTextBitmap(views, context, R.id.iv_header_pct, context.getString(R.string.change_percent), TABLE_SP, MUTED, bold = true, align = FontHelper.Align.CENTER)
@@ -175,26 +174,26 @@ object WidgetRenderer {
 
     private fun applyData(context: Context, views: RemoteViews, data: WidgetResponse, offline: Boolean) {
         if (!data.success) {
-            FontHelper.setTextBitmap(views, context, R.id.iv_total_assets, "خطا", 22f, GOLD, bold = true)
-            FontHelper.setTextBitmap(views, context, R.id.iv_updated_at, data.message ?: "ناموفق", 10f, MUTED)
+            FontHelper.setTextBitmap(views, context, R.id.iv_total_assets, "خطا", 26f, GOLD, bold = true)
+            FontHelper.setTextBitmap(views, context, R.id.iv_updated_at, data.message ?: "ناموفق", 11f, MUTED)
             return
         }
 
         FontHelper.setTextBitmap(
             views, context, R.id.iv_total_assets,
-            NumberUtils.format(data.totalAssetsToman), 22f, GOLD, bold = true
+            NumberUtils.format(data.totalAssetsToman), 26f, GOLD, bold = true
         )
 
         val pnl = data.dailyProfitToman
         val pnlColor = if (pnl >= 0) POS else NEG
-        FontHelper.setTextBitmap(views, context, R.id.iv_daily_pnl, NumberUtils.formatSigned(pnl), 13f, pnlColor, bold = true)
-        FontHelper.setTextBitmap(views, context, R.id.iv_daily_pnl_pct, NumberUtils.formatPercent(data.dailyProfitPercent), 11f, pnlColor)
-        FontHelper.setTextBitmap(views, context, R.id.iv_daily_buy, NumberUtils.format(data.dailyBuyToman), 13f, WHITE, bold = true)
+        FontHelper.setTextBitmap(views, context, R.id.iv_daily_pnl, NumberUtils.formatSigned(pnl), 15f, pnlColor, bold = true)
+        FontHelper.setTextBitmap(views, context, R.id.iv_daily_pnl_pct, NumberUtils.formatPercent(data.dailyProfitPercent), 13f, pnlColor)
+        FontHelper.setTextBitmap(views, context, R.id.iv_daily_buy, NumberUtils.format(data.dailyBuyToman), 15f, WHITE, bold = true)
 
         val stamp = data.updatedAt ?: ""
         FontHelper.setTextBitmap(
             views, context, R.id.iv_updated_at,
-            if (offline) "آفلاین · $stamp" else stamp, 10f, MUTED
+            if (offline) "آفلاین · $stamp" else stamp, 11f, MUTED
         )
 
         for (i in slots.indices) {
@@ -214,8 +213,7 @@ object WidgetRenderer {
         val pctColor = if (positive) POS else NEG
         val arrow = if (positive) " ↑" else " ↓"
 
-        // همه با TABLE_SP یکسان؛ Bitmap با wrap_content مقیاس نمی‌شود
-        FontHelper.setTextBitmap(views, context, slot.name, name, TABLE_SP, WHITE, bold = true, maxWidthDp = 110f)
+        FontHelper.setTextBitmap(views, context, slot.name, name, TABLE_SP, WHITE, bold = true, maxWidthDp = 120f)
         FontHelper.setTextBitmap(views, context, slot.value, NumberUtils.format(item.currentValue), TABLE_SP, WHITE, bold = true, align = FontHelper.Align.CENTER)
         FontHelper.setTextBitmap(views, context, slot.toman, context.getString(R.string.toman), TABLE_SP, MUTED, align = FontHelper.Align.CENTER)
         FontHelper.setTextBitmap(
