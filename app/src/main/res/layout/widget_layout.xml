@@ -10,7 +10,10 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-    <!-- Header: title on visual LEFT -->
+    <!--
+      Header forced LTR:
+      [LEFT] ترید پلاس ........ time  refresh [RIGHT]
+    -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,20 +22,29 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start|center_vertical"
+            android:fontFamily="@font/vazirmatn"
             android:text="@string/widget_name"
+            android:textAlignment="viewStart"
             android:textColor="@color/accent_gold"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <!-- spacer -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:text="" />
 
         <TextView
             android:id="@+id/tv_updated_at"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="6dp"
+            android:fontFamily="@font/vazirmatn"
             android:text="--"
             android:textColor="@color/text_muted"
             android:textSize="10sp" />
@@ -61,6 +73,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/vazirmatn"
             android:text="@string/total_assets"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
@@ -69,6 +82,7 @@
             android:id="@+id/tv_total_assets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/vazirmatn"
             android:text="۰"
             android:textColor="@color/accent_gold"
             android:textSize="24sp"
@@ -77,6 +91,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/vazirmatn"
             android:text="@string/toman"
             android:textColor="@color/text_muted"
             android:textSize="10sp" />
@@ -101,6 +116,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:text="@string/daily_pnl"
                 android:textColor="@color/text_muted"
                 android:textSize="10sp" />
@@ -109,6 +125,7 @@
                 android:id="@+id/tv_daily_pnl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:text="۰"
                 android:textColor="@color/negative"
                 android:textSize="14sp"
@@ -118,6 +135,7 @@
                 android:id="@+id/tv_daily_pnl_pct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:text="(۰%)"
                 android:textColor="@color/negative"
                 android:textSize="11sp" />
@@ -135,6 +153,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:text="@string/daily_buy"
                 android:textColor="@color/text_muted"
                 android:textSize="10sp" />
@@ -143,6 +162,7 @@
                 android:id="@+id/tv_daily_buy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:text="۰"
                 android:textColor="@color/text_primary"
                 android:textSize="14sp"
@@ -151,19 +171,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:text="@string/toman"
                 android:textColor="@color/text_muted"
                 android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <!--
-      Table uses RTL so:
-        RIGHT = name (first child)
-        CENTER = value
-        LEFT = profit/loss (last child)
-      Headers centered in each column.
-    -->
+    <!-- Table header: RTL → RIGHT name | CENTER value | LEFT pct ; titles centered -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -178,6 +193,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
+            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:text="@string/assets"
             android:textColor="@color/accent_gold"
@@ -188,6 +204,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:text="@string/current_value"
             android:textColor="@color/text_muted"
@@ -197,6 +214,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
+            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:text="@string/change_percent"
             android:textColor="@color/text_muted"
@@ -209,7 +227,7 @@
         android:layout_marginTop="4dp"
         android:background="@color/divider" />
 
-    <!-- Row 1: RIGHT name | CENTER value | LEFT pct -->
+    <!-- Row 1 -->
     <LinearLayout
         android:id="@+id/row_asset_1"
         android:layout_width="match_parent"
@@ -240,6 +258,7 @@
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="start|center_vertical"
                 android:maxLines="1"
                 android:text="-"
@@ -259,6 +278,7 @@
                 android:id="@+id/tv_asset_1_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text="۰"
                 android:textColor="@color/text_primary"
@@ -268,6 +288,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text="@string/toman"
                 android:textColor="@color/text_muted"
@@ -280,6 +301,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
+            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
@@ -325,6 +347,7 @@
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="start|center_vertical"
                 android:maxLines="1"
                 android:text=""
@@ -344,6 +367,7 @@
                 android:id="@+id/tv_asset_2_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text=""
                 android:textColor="@color/text_primary"
@@ -353,6 +377,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text="@string/toman"
                 android:textColor="@color/text_muted"
@@ -365,6 +390,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_pos"
+            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
@@ -410,6 +436,7 @@
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="start|center_vertical"
                 android:maxLines="1"
                 android:text=""
@@ -429,6 +456,7 @@
                 android:id="@+id/tv_asset_3_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text=""
                 android:textColor="@color/text_primary"
@@ -438,6 +466,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text="@string/toman"
                 android:textColor="@color/text_muted"
@@ -450,6 +479,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
+            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
@@ -495,6 +525,7 @@
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="start|center_vertical"
                 android:maxLines="1"
                 android:text=""
@@ -514,6 +545,7 @@
                 android:id="@+id/tv_asset_4_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text=""
                 android:textColor="@color/text_primary"
@@ -523,6 +555,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text="@string/toman"
                 android:textColor="@color/text_muted"
@@ -535,6 +568,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_neg"
+            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
@@ -580,6 +614,7 @@
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="start|center_vertical"
                 android:maxLines="1"
                 android:text=""
@@ -599,6 +634,7 @@
                 android:id="@+id/tv_asset_5_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text=""
                 android:textColor="@color/text_primary"
@@ -608,6 +644,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/vazirmatn"
                 android:gravity="center"
                 android:text="@string/toman"
                 android:textColor="@color/text_muted"
@@ -620,6 +657,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:background="@drawable/bg_badge_pos"
+            android:fontFamily="@font/vazirmatn"
             android:gravity="center"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"

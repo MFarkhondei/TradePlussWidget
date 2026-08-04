@@ -27,6 +27,15 @@ jobs:
         run: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 
+      - name: Download Vazirmatn fonts
+        run: |
+          mkdir -p app/src/main/res/font
+          BASE="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/ttf"
+          curl -fsSL "$BASE/Vazirmatn-Regular.ttf" -o app/src/main/res/font/vazirmatn_regular.ttf
+          curl -fsSL "$BASE/Vazirmatn-Medium.ttf" -o app/src/main/res/font/vazirmatn_medium.ttf
+          curl -fsSL "$BASE/Vazirmatn-Bold.ttf" -o app/src/main/res/font/vazirmatn_bold.ttf
+          ls -la app/src/main/res/font/
+
       - name: Setup Gradle Wrapper
         run: |
           if [ ! -f ./gradlew ]; then
