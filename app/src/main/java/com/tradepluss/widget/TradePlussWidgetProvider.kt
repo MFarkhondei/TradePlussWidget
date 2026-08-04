@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.widget.RemoteViews
+import com.google.gson.Gson
 import com.tradepluss.widget.model.WidgetResponse
 import java.util.concurrent.Executors
 
@@ -16,62 +17,123 @@ class TradePlussWidgetProvider : AppWidgetProvider() {
     companion object {
         const val ACTION_REFRESH = "com.tradepluss.widget.ACTION_REFRESH"
         private val executor = Executors.newSingleThreadExecutor()
+        private val gson = Gson()
 
         fun updateAll(context: Context) {
-            val mgr = AppWidgetManager.getInstance(context)
-            val ids = mgr.getAppWidgetIds(ComponentName(context, TradePlussWidgetProvider::class.java))
+            val appCtx = context.applicationContext
+            val mgr = AppWidgetManager.getInstance(appCtx)
+            val ids = mgr.getAppWidgetIds(ComponentName(appCtx, TradePlussWidgetProvider::class.java))
             if (ids.isEmpty()) return
-            val intent = Intent(context, TradePlussWidgetProvider::class.java).apply {
+            val intent = Intent(appCtx, TradePlussWidgetProvider::class.java).apply {
                 action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
             }
-            context.sendBroadcast(intent)
+            appCtx.sendBroadcast(intent)
+        }
+
+        /** Push already-fetched data into all widgets (used after successful config test). */
+        fun applyCachedToAll(context: Context) {
+            val appCtx = context.applicationContext
+            val json = Prefs.getCacheJson(appCtx) ?: return
+            val data = try {
+                gson.fromJson(json, WidgetResponse::class.java)
+            } catch (_: Exception) {
+                null
+            } ?: return
+            val mgr = AppWidgetManager.getInstance(appCtx)
+            val ids = mgr.getAppWidgetIds(ComponentName(appCtx, TradePlussWidgetProvider::class.java))
+            for (id in ids) {
+                val views = RemoteViews(appCtx.packageName, R.layout.widget_layout)
+                wireClicks(appCtx, views)
+                applyData(views, data, offline = false)
+                mgr.updateAppWidget(id, views)
+            }
+        }
+
+        private fun wireClicks(context: Context, views: RemoteViews) {
+            val refreshIntent = Intent(context, TradePlussWidgetProvider::class.java).apply {
+                action = ACTION_REFRESH
+            }
+            val refreshPi = PendingIntent.getBroadcast(
+                context, 100, refreshIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.btn_refresh, refreshPi)
+
+            val cfgIntent = Intent(context, ConfigActivity::class.java)
+            val cfgPi = PendingIntent.getActivity(
+                context, 101, cfgIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.widget_root, cfgPi)
+        }
+
+        private fun applyData(views: RemoteViews, data: WidgetResponse, offline: Boolean) {
+            if (!data.success) {
+                views.setTextViewText(R.id.tv_total_assets, "خطا")
+                views.setTextViewText(R.id.tv_updated_at, data.message ?: "ناموفق")
+                return
+            }
+
+            views.setTextViewText(R.id.tv_total_assets, NumberUtils.format(data.totalAssetsToman))
+            views.setTextViewText(R.id.tv_daily_buy, NumberUtils.format(data.dailyBuyToman))
+
+            val pnl = data.dailyProfitToman
+            val pnlColor = if (pnl >= 0) Color.parseColor("#22C55E") else Color.parseColor("#EF4444")
+            views.setTextViewText(R.id.tv_daily_pnl, NumberUtils.formatSigned(pnl))
+            views.setTextColor(R.id.tv_daily_pnl, pnlColor)
+            views.setTextViewText(R.id.tv_daily_pnl_pct, NumberUtils.formatPercent(data.dailyProfitPercent))
+            views.setTextColor(R.id.tv_daily_pnl_pct, pnlColor)
+
+            val stamp = data.updatedAt ?: ""
+            views.setTextViewText(
+                R.id.tv_updated_at,
+                if (offline) "آفلاین · $stamp" else stamp
+            )
+
+            val slots = intArrayOf(
+                R.id.tv_asset_1, R.id.tv_asset_2, R.id.tv_asset_3, R.id.tv_asset_4, R.id.tv_asset_5
+            )
+            for (i in slots.indices) {
+                if (i < data.items.size) {
+                    val it = data.items[i]
+                    val name = it.coinName.ifBlank { it.symbol }.ifBlank { "-" }
+                    val line =
+                        "$name  ${NumberUtils.format(it.currentValue)}  ${NumberUtils.formatPercent(it.profitPercent)}"
+                    views.setTextViewText(slots[i], line)
+                    val c =
+                        if (it.profitPercent >= 0) Color.parseColor("#22C55E") else Color.parseColor("#EF4444")
+                    views.setTextColor(slots[i], c)
+                } else {
+                    views.setTextViewText(slots[i], "")
+                }
+            }
         }
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (id in appWidgetIds) {
-            render(context, appWidgetManager, id)
+            render(context.applicationContext, appWidgetManager, id)
         }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         if (intent.action == ACTION_REFRESH || intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
-            val mgr = AppWidgetManager.getInstance(context)
+            val appCtx = context.applicationContext
+            val mgr = AppWidgetManager.getInstance(appCtx)
             val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
-                ?: mgr.getAppWidgetIds(ComponentName(context, TradePlussWidgetProvider::class.java))
+                ?: mgr.getAppWidgetIds(ComponentName(appCtx, TradePlussWidgetProvider::class.java))
             for (id in ids) {
-                render(context, mgr, id)
+                render(appCtx, mgr, id)
             }
         }
     }
 
-    private fun baseViews(context: Context): RemoteViews {
-        val views = RemoteViews(context.packageName, R.layout.widget_layout)
-
-        val refreshIntent = Intent(context, TradePlussWidgetProvider::class.java).apply {
-            action = ACTION_REFRESH
-        }
-        val refreshPi = PendingIntent.getBroadcast(
-            context, 100, refreshIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        views.setOnClickPendingIntent(R.id.btn_refresh, refreshPi)
-
-        val cfgIntent = Intent(context, ConfigActivity::class.java)
-        val cfgPi = PendingIntent.getActivity(
-            context, 101, cfgIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        views.setOnClickPendingIntent(R.id.widget_root, cfgPi)
-
-        return views
-    }
-
     private fun render(context: Context, manager: AppWidgetManager, widgetId: Int) {
-        // Always show a basic layout first so Samsung can place the widget
-        val views = baseViews(context)
+        val views = RemoteViews(context.packageName, R.layout.widget_layout)
+        wireClicks(context, views)
+
         if (!Prefs.isConfigured(context)) {
             views.setTextViewText(R.id.tv_total_assets, "تنظیم نشده")
             views.setTextViewText(R.id.tv_updated_at, "اپ را باز کنید")
@@ -83,62 +145,58 @@ class TradePlussWidgetProvider : AppWidgetProvider() {
             return
         }
 
-        views.setTextViewText(R.id.tv_total_assets, "...")
-        views.setTextViewText(R.id.tv_updated_at, "در حال بارگذاری")
-        manager.updateAppWidget(widgetId, views)
+        // Show cache immediately while loading
+        val cachedJson = Prefs.getCacheJson(context)
+        if (!cachedJson.isNullOrBlank()) {
+            try {
+                val cached = gson.fromJson(cachedJson, WidgetResponse::class.java)
+                if (cached != null && cached.success) {
+                    applyData(views, cached, offline = true)
+                    manager.updateAppWidget(widgetId, views)
+                }
+            } catch (_: Exception) {
+            }
+        } else {
+            views.setTextViewText(R.id.tv_total_assets, "...")
+            views.setTextViewText(R.id.tv_updated_at, "در حال بارگذاری")
+            manager.updateAppWidget(widgetId, views)
+        }
 
         executor.execute {
             try {
-                val data = ApiClient.fetchWidgetData(
+                val (data, raw) = ApiClient.fetchWidgetData(
                     Prefs.getUrl(context),
                     Prefs.getUser(context),
                     Prefs.getToken(context)
                 )
-                val ready = baseViews(context)
-                applyData(ready, data)
+                if (data.success) {
+                    Prefs.saveCache(context, raw)
+                }
+                val ready = RemoteViews(context.packageName, R.layout.widget_layout)
+                wireClicks(context, ready)
+                applyData(ready, data, offline = false)
                 manager.updateAppWidget(widgetId, ready)
             } catch (e: Exception) {
-                val err = baseViews(context)
-                err.setTextViewText(R.id.tv_total_assets, "خطا")
-                err.setTextViewText(R.id.tv_updated_at, (e.message ?: "شبکه").take(24))
-                manager.updateAppWidget(widgetId, err)
+                // Keep cache on screen if we have it; only show error if no cache
+                val hasCache = !Prefs.getCacheJson(context).isNullOrBlank()
+                if (!hasCache) {
+                    val err = RemoteViews(context.packageName, R.layout.widget_layout)
+                    wireClicks(context, err)
+                    err.setTextViewText(R.id.tv_total_assets, "خطا")
+                    val msg = (e.message ?: "شبکه").replace("\n", " ")
+                    err.setTextViewText(R.id.tv_updated_at, msg.take(40))
+                    manager.updateAppWidget(widgetId, err)
+                }
+                // if hasCache: leave the offline-labeled cache already shown
             }
         }
     }
 
-    private fun applyData(views: RemoteViews, data: WidgetResponse) {
-        if (!data.success) {
-            views.setTextViewText(R.id.tv_total_assets, "خطا")
-            views.setTextViewText(R.id.tv_updated_at, data.message ?: "ناموفق")
-            return
-        }
+    private fun wireClicks(context: Context, views: RemoteViews) {
+        Companion.wireClicks(context, views)
+    }
 
-        views.setTextViewText(R.id.tv_total_assets, NumberUtils.format(data.totalAssetsToman))
-        views.setTextViewText(R.id.tv_daily_buy, NumberUtils.format(data.dailyBuyToman))
-
-        val pnl = data.dailyProfitToman
-        val pnlColor = if (pnl >= 0) Color.parseColor("#22C55E") else Color.parseColor("#EF4444")
-        views.setTextViewText(R.id.tv_daily_pnl, NumberUtils.formatSigned(pnl))
-        views.setTextColor(R.id.tv_daily_pnl, pnlColor)
-        views.setTextViewText(R.id.tv_daily_pnl_pct, NumberUtils.formatPercent(data.dailyProfitPercent))
-        views.setTextColor(R.id.tv_daily_pnl_pct, pnlColor)
-
-        views.setTextViewText(R.id.tv_updated_at, data.updatedAt ?: "")
-
-        val slots = intArrayOf(
-            R.id.tv_asset_1, R.id.tv_asset_2, R.id.tv_asset_3, R.id.tv_asset_4, R.id.tv_asset_5
-        )
-        for (i in slots.indices) {
-            if (i < data.items.size) {
-                val it = data.items[i]
-                val name = it.coinName.ifBlank { it.symbol }.ifBlank { "-" }
-                val line = "$name  ${NumberUtils.format(it.currentValue)}  ${NumberUtils.formatPercent(it.profitPercent)}"
-                views.setTextViewText(slots[i], line)
-                val c = if (it.profitPercent >= 0) Color.parseColor("#22C55E") else Color.parseColor("#EF4444")
-                views.setTextColor(slots[i], c)
-            } else {
-                views.setTextViewText(slots[i], "")
-            }
-        }
+    private fun applyData(views: RemoteViews, data: WidgetResponse, offline: Boolean) {
+        Companion.applyData(views, data, offline)
     }
 }

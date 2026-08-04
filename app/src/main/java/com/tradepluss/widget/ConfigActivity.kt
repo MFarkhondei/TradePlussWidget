@@ -27,9 +27,11 @@ class ConfigActivity : AppCompatActivity() {
         val btnTestConnection = findViewById<MaterialButton>(R.id.btn_test_connection)
         val tvStatus = findViewById<TextView>(R.id.tv_status)
 
-        etUrl.setText(Prefs.getUrl(this).ifBlank {
-            "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
-        })
+        etUrl.setText(
+            Prefs.getUrl(this).ifBlank {
+                "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
+            }
+        )
         etUser.setText(Prefs.getUser(this))
         etToken.setText(Prefs.getToken(this))
 
@@ -49,8 +51,10 @@ class ConfigActivity : AppCompatActivity() {
 
             Prefs.save(this, url, user, token)
             Toast.makeText(this, "ذخیره شد", Toast.LENGTH_SHORT).show()
+            // If we already have cache from a successful test, push it now
+            TradePlussWidgetProvider.applyCachedToAll(this)
             TradePlussWidgetProvider.updateAll(this)
-            tvStatus.text = "✅ تنظیمات ذخیره شد. حالا ویجت را به صفحه اصلی اضافه کنید."
+            tvStatus.text = "✅ ذخیره شد. ویجت در حال بروزرسانی است."
         }
 
         btnTestConnection.setOnClickListener {
@@ -70,16 +74,33 @@ class ConfigActivity : AppCompatActivity() {
             testJob?.cancel()
             btnTestConnection.isEnabled = false
             btnTestConnection.text = getString(R.string.testing)
-            tvStatus.text = ""
+            tvStatus.text = "در حال اتصال..."
 
             testJob = CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = ApiClient.fetchWidgetData(url, user, token)
+                    // Always persist credentials before network call
+                    Prefs.save(this@ConfigActivity, url, user, token)
+
+                    val (response, raw) = ApiClient.fetchWidgetData(url, user, token)
+                    if (response.success) {
+                        Prefs.saveCache(this@ConfigActivity, raw)
+                    }
+
                     withContext(Dispatchers.Main) {
                         if (response.success) {
                             tvStatus.text = getString(R.string.connection_success)
+                            // Push live data into widget immediately
+                            TradePlussWidgetProvider.applyCachedToAll(this@ConfigActivity)
+                            Toast.makeText(
+                                this@ConfigActivity,
+                                "داده روی ویجت اعمال شد",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
-                            tvStatus.text = getString(R.string.connection_failed, response.message ?: "پاسخ نامعتبر")
+                            tvStatus.text = getString(
+                                R.string.connection_failed,
+                                response.message ?: "پاسخ نامعتبر"
+                            )
                         }
                     }
                 } catch (e: Exception) {
