@@ -24,7 +24,7 @@ class ConfigActivity : AppCompatActivity() {
 
         val etUrl = findViewById<TextInputEditText>(R.id.et_webapp_url)
         val etUser = findViewById<TextInputEditText>(R.id.et_username)
-        val etToken = findViewById<TextInputEditText>(R.id.et_token)
+        val etPassword = findViewById<TextInputEditText>(R.id.et_password)
         val spinner = findViewById<Spinner>(R.id.spinner_interval)
         val btnSave = findViewById<MaterialButton>(R.id.btn_save)
         val btnTestConnection = findViewById<MaterialButton>(R.id.btn_test_connection)
@@ -36,7 +36,7 @@ class ConfigActivity : AppCompatActivity() {
             }
         )
         etUser.setText(Prefs.getUser(this))
-        etToken.setText(Prefs.getToken(this))
+        etPassword.setText(Prefs.getPassword(this))
 
         val labels = resources.getStringArray(R.array.refresh_interval_labels)
         spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, labels)
@@ -47,10 +47,10 @@ class ConfigActivity : AppCompatActivity() {
         btnSave.setOnClickListener {
             val url = etUrl.text?.toString()?.trim().orEmpty()
             val user = etUser.text?.toString()?.trim().orEmpty()
-            val token = etToken.text?.toString()?.trim().orEmpty()
+            val password = etPassword.text?.toString().orEmpty()
             val interval = Prefs.INTERVAL_OPTIONS.getOrElse(spinner.selectedItemPosition) { 30 }
 
-            if (url.isBlank() || user.isBlank() || token.isBlank()) {
+            if (url.isBlank() || user.isBlank() || password.isBlank()) {
                 tvStatus.text = "همه فیلدها الزامی هستند"
                 return@setOnClickListener
             }
@@ -59,11 +59,10 @@ class ConfigActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Prefs.save(this, url, user, token, interval)
+            Prefs.save(this, url, user, password, interval)
             UpdateScheduler.schedule(this)
             Toast.makeText(this, "ذخیره شد", Toast.LENGTH_SHORT).show()
             WidgetRenderer.applyCache(this, offline = false)
-            // Same path as test connection
             WidgetUpdateService.start(this)
             val intervalText = if (interval > 0) "هر $interval دقیقه" else "فقط دستی"
             tvStatus.text = "✅ ذخیره شد · به‌روزرسانی خودکار: $intervalText"
@@ -72,10 +71,10 @@ class ConfigActivity : AppCompatActivity() {
         btnTestConnection.setOnClickListener {
             val url = etUrl.text?.toString()?.trim().orEmpty()
             val user = etUser.text?.toString()?.trim().orEmpty()
-            val token = etToken.text?.toString()?.trim().orEmpty()
+            val password = etPassword.text?.toString().orEmpty()
             val interval = Prefs.INTERVAL_OPTIONS.getOrElse(spinner.selectedItemPosition) { 30 }
 
-            if (url.isBlank() || user.isBlank() || token.isBlank()) {
+            if (url.isBlank() || user.isBlank() || password.isBlank()) {
                 tvStatus.text = "همه فیلدها الزامی هستند"
                 return@setOnClickListener
             }
@@ -91,10 +90,9 @@ class ConfigActivity : AppCompatActivity() {
 
             testJob = CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    Prefs.save(this@ConfigActivity, url, user, token, interval)
+                    Prefs.save(this@ConfigActivity, url, user, password, interval)
                     UpdateScheduler.schedule(this@ConfigActivity)
 
-                    // Exact same function used by widget refresh
                     val ok = WidgetRenderer.fetchAndApply(this@ConfigActivity)
 
                     withContext(Dispatchers.Main) {

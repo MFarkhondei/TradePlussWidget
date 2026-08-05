@@ -14,13 +14,14 @@ object ApiClient {
     private val gson = Gson()
 
     /**
+     * Login with username + password (no widget token required).
      * Returns pair of (response, rawJson) so caller can cache raw JSON.
      */
-    fun fetchWidgetData(baseUrl: String, username: String, token: String): Pair<WidgetResponse, String> {
+    fun fetchWidgetData(baseUrl: String, username: String, password: String): Pair<WidgetResponse, String> {
         val cleanUrl = baseUrl.trim().trimEnd('/')
         val qUser = URLEncoder.encode(username, "UTF-8")
-        val qToken = URLEncoder.encode(token, "UTF-8")
-        val fullUrl = "$cleanUrl?action=widget&user=$qUser&token=$qToken"
+        val qPass = URLEncoder.encode(password, "UTF-8")
+        val fullUrl = "$cleanUrl?action=widget&user=$qUser&password=$qPass"
 
         // Warm up DNS (helps intermittent Iran DNS)
         try {

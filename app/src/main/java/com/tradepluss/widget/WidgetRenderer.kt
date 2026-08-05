@@ -118,7 +118,7 @@ object WidgetRenderer {
             val (data, raw) = ApiClient.fetchWidgetData(
                 Prefs.getUrl(appCtx),
                 Prefs.getUser(appCtx),
-                Prefs.getToken(appCtx)
+                Prefs.getPassword(appCtx)
             )
             if (data.success) {
                 Prefs.saveCache(appCtx, raw)

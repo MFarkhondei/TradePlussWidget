@@ -6,7 +6,9 @@ object Prefs {
     private const val NAME = "tradepluss_widget_prefs"
     private const val KEY_URL = "webapp_url"
     private const val KEY_USER = "username"
-    private const val KEY_TOKEN = "token"
+    private const val KEY_PASSWORD = "password"
+    /** @deprecated kept only to migrate old installs that stored widget token */
+    private const val KEY_TOKEN_LEGACY = "token"
     private const val KEY_CACHE_JSON = "cache_json"
     private const val KEY_CACHE_AT = "cache_at"
     private const val KEY_INTERVAL_MIN = "interval_min"
@@ -17,11 +19,12 @@ object Prefs {
     private fun prefs(context: Context) =
         context.applicationContext.getSharedPreferences(NAME, Context.MODE_PRIVATE)
 
-    fun save(context: Context, url: String, user: String, token: String, intervalMin: Int) {
+    fun save(context: Context, url: String, user: String, password: String, intervalMin: Int) {
         prefs(context).edit()
             .putString(KEY_URL, url.trim())
             .putString(KEY_USER, user.trim())
-            .putString(KEY_TOKEN, token.trim())
+            .putString(KEY_PASSWORD, password)
+            .remove(KEY_TOKEN_LEGACY)
             .putInt(KEY_INTERVAL_MIN, intervalMin)
             .commit()
     }
@@ -32,8 +35,12 @@ object Prefs {
     fun getUser(context: Context): String =
         prefs(context).getString(KEY_USER, "") ?: ""
 
-    fun getToken(context: Context): String =
-        prefs(context).getString(KEY_TOKEN, "") ?: ""
+    fun getPassword(context: Context): String {
+        val p = prefs(context).getString(KEY_PASSWORD, "") ?: ""
+        if (p.isNotBlank()) return p
+        // fallback: old token installs — user must re-login with password
+        return ""
+    }
 
     fun getIntervalMin(context: Context): Int =
         prefs(context).getInt(KEY_INTERVAL_MIN, 30)
@@ -41,7 +48,7 @@ object Prefs {
     fun isConfigured(context: Context): Boolean {
         return getUrl(context).isNotBlank() &&
                 getUser(context).isNotBlank() &&
-                getToken(context).isNotBlank()
+                getPassword(context).isNotBlank()
     }
 
     fun saveCache(context: Context, json: String) {
