@@ -16,6 +16,11 @@ import kotlinx.coroutines.withContext
 
 class ConfigActivity : AppCompatActivity() {
 
+    companion object {
+        const val DEFAULT_WEBAPP_URL =
+            "https://script.google.com/macros/s/AKfycbzo7wgBwhzCxrOgIndTCz3aj1Rjog_rx-IpCi8py-LGPlh6-skS0KgNO6LnxItAGOZE/exec"
+    }
+
     private var testJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,11 +35,7 @@ class ConfigActivity : AppCompatActivity() {
         val btnTestConnection = findViewById<MaterialButton>(R.id.btn_test_connection)
         val tvStatus = findViewById<TextView>(R.id.tv_status)
 
-        etUrl.setText(
-            Prefs.getUrl(this).ifBlank {
-                "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
-            }
-        )
+        etUrl.setText(Prefs.getUrl(this).ifBlank { DEFAULT_WEBAPP_URL })
         etUser.setText(Prefs.getUser(this))
         etPassword.setText(Prefs.getPassword(this))
 
