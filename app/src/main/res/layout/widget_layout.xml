@@ -96,7 +96,6 @@
         android:layout_marginTop="6dp"
         android:orientation="horizontal">
 
-        <!-- سود و زیان روزانه — عنوان بالا راست -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -134,7 +133,6 @@
                 android:scaleType="fitStart" />
         </LinearLayout>
 
-        <!-- مجموع خرید روزانه — عنوان بالا راست -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -445,6 +443,51 @@
             android:paddingTop="2dp"
             android:paddingBottom="2dp">
             <ImageView android:id="@+id/iv_asset_5_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" />
+
+    <!-- row 6: مس (Copper) -->
+    <LinearLayout
+        android:id="@+id/row_asset_6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layoutDirection="rtl"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:gravity="center_vertical|start"
+            android:orientation="horizontal">
+            <ImageView android:id="@+id/iv_asset_6" android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_asset_copper" />
+            <ImageView android:id="@+id/iv_asset_6_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="6dp" android:adjustViewBounds="true" android:scaleType="fitStart" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView android:id="@+id/iv_asset_6_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
+            <ImageView android:id="@+id/iv_asset_6_toman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:background="@drawable/bg_badge_neg"
+            android:gravity="center"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp">
+            <ImageView android:id="@+id/iv_asset_6_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="center" />
         </LinearLayout>
     </LinearLayout>
 

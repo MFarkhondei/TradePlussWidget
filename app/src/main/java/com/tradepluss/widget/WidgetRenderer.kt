@@ -40,7 +40,8 @@ object WidgetRenderer {
         AssetSlot(R.id.row_asset_2, R.id.iv_asset_2, R.id.iv_asset_2_name, R.id.iv_asset_2_value, R.id.iv_asset_2_toman, R.id.iv_asset_2_pct),
         AssetSlot(R.id.row_asset_3, R.id.iv_asset_3, R.id.iv_asset_3_name, R.id.iv_asset_3_value, R.id.iv_asset_3_toman, R.id.iv_asset_3_pct),
         AssetSlot(R.id.row_asset_4, R.id.iv_asset_4, R.id.iv_asset_4_name, R.id.iv_asset_4_value, R.id.iv_asset_4_toman, R.id.iv_asset_4_pct),
-        AssetSlot(R.id.row_asset_5, R.id.iv_asset_5, R.id.iv_asset_5_name, R.id.iv_asset_5_value, R.id.iv_asset_5_toman, R.id.iv_asset_5_pct)
+        AssetSlot(R.id.row_asset_5, R.id.iv_asset_5, R.id.iv_asset_5_name, R.id.iv_asset_5_value, R.id.iv_asset_5_toman, R.id.iv_asset_5_pct),
+        AssetSlot(R.id.row_asset_6, R.id.iv_asset_6, R.id.iv_asset_6_name, R.id.iv_asset_6_value, R.id.iv_asset_6_toman, R.id.iv_asset_6_pct)
     )
 
     fun allIds(context: Context): IntArray {
@@ -234,6 +235,7 @@ object WidgetRenderer {
             s.contains("USDC") || s.contains("USDT") || n.contains("یو اس") || n.contains("تتر") -> R.drawable.ic_asset_usdc
             s.contains("GOLD") || n.contains("طلا") -> R.drawable.ic_asset_gold
             s.contains("SILVER") || n.contains("نقره") -> R.drawable.ic_asset_silver
+            s.contains("COPPER") || s.contains("CU") || n.contains("مس") -> R.drawable.ic_asset_copper
             else -> R.drawable.ic_coin_default
         }
     }
