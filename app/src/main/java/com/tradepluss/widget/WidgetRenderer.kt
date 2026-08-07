@@ -165,8 +165,7 @@ object WidgetRenderer {
         views.setOnClickPendingIntent(
             R.id.widget_root,
             PendingIntent.getActivity(
-                context, 2000 + widgetId,
-                Intent(context, ConfigActivity::class.java),
+                context, 2000 + widgetId, refreshIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
