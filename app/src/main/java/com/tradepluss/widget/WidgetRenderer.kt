@@ -41,7 +41,8 @@ object WidgetRenderer {
         AssetSlot(R.id.row_asset_3, R.id.iv_asset_3, R.id.iv_asset_3_name, R.id.iv_asset_3_value, R.id.iv_asset_3_toman, R.id.iv_asset_3_pct),
         AssetSlot(R.id.row_asset_4, R.id.iv_asset_4, R.id.iv_asset_4_name, R.id.iv_asset_4_value, R.id.iv_asset_4_toman, R.id.iv_asset_4_pct),
         AssetSlot(R.id.row_asset_5, R.id.iv_asset_5, R.id.iv_asset_5_name, R.id.iv_asset_5_value, R.id.iv_asset_5_toman, R.id.iv_asset_5_pct),
-        AssetSlot(R.id.row_asset_6, R.id.iv_asset_6, R.id.iv_asset_6_name, R.id.iv_asset_6_value, R.id.iv_asset_6_toman, R.id.iv_asset_6_pct)
+        AssetSlot(R.id.row_asset_6, R.id.iv_asset_6, R.id.iv_asset_6_name, R.id.iv_asset_6_value, R.id.iv_asset_6_toman, R.id.iv_asset_6_pct),
+        AssetSlot(R.id.row_asset_7, R.id.iv_asset_7, R.id.iv_asset_7_name, R.id.iv_asset_7_value, R.id.iv_asset_7_toman, R.id.iv_asset_7_pct)
     )
 
     fun allIds(context: Context): IntArray {
@@ -212,15 +213,18 @@ object WidgetRenderer {
         if (items.size <= slots.size) return items
 
         val visible = items.take(slots.size).toMutableList()
-        val gold750 = items.drop(slots.size).firstOrNull {
-            it.symbol.equals("Gold750", ignoreCase = true) ||
-                    it.coinName.contains("۷۵۰") ||
-                    it.coinName.contains("750")
-        }
-        if (gold750 != null && visible.none { it.symbol.equals("Gold750", ignoreCase = true) }) {
+        val gold750 = items.drop(slots.size).firstOrNull(::isGold750)
+        if (gold750 != null && visible.none(::isGold750)) {
             visible[visible.lastIndex] = gold750
         }
         return visible
+    }
+
+    private fun isGold750(item: AssetItem): Boolean {
+        val normalizedSymbol = item.symbol.filter(Char::isLetterOrDigit)
+        return normalizedSymbol.equals("Gold750", ignoreCase = true) ||
+                item.coinName.contains("۷۵۰") ||
+                item.coinName.contains("750")
     }
 
     private fun bindAsset(context: Context, views: RemoteViews, slot: AssetSlot, item: AssetItem) {
