@@ -240,4 +240,3 @@ object WidgetRenderer {
         }
     }
 }
-
