@@ -14,9 +14,6 @@ import com.tradepluss.widget.model.WidgetResponse
 
 object WidgetRenderer {
 
-    /** Keep Gold750 above the fold even when a launcher clips the seventh row. */
-    private const val GUARANTEED_VISIBLE_ASSET_COUNT = 6
-
     private val gson = Gson()
 
     private val GOLD = Color.parseColor("#F5C542")
@@ -213,20 +210,15 @@ object WidgetRenderer {
     }
 
     private fun selectVisibleItems(items: List<AssetItem>): List<AssetItem> {
-        val visible = items.take(slots.size).toMutableList()
-        val gold750Index = visible.indexOfFirst(::isGold750)
+        val sortedItems = items.sortedByDescending { it.currentValue }
+        val visible = sortedItems.take(slots.size).toMutableList()
 
-        if (gold750Index >= GUARANTEED_VISIBLE_ASSET_COUNT) {
-            val gold750 = visible.removeAt(gold750Index)
-            visible.add(GUARANTEED_VISIBLE_ASSET_COUNT - 1, gold750)
-        }
+        if (sortedItems.size <= slots.size) return visible
 
-        if (items.size <= slots.size) return visible
-
-        val gold750 = items.drop(slots.size).firstOrNull(::isGold750)
+        val gold750 = sortedItems.drop(slots.size).firstOrNull(::isGold750)
         if (gold750 != null && visible.none(::isGold750)) {
-            visible.add(GUARANTEED_VISIBLE_ASSET_COUNT - 1, gold750)
-            visible.removeAt(visible.lastIndex)
+            visible[visible.lastIndex] = gold750
+            visible.sortByDescending { it.currentValue }
         }
         return visible
     }
