@@ -41,7 +41,8 @@ object WidgetRenderer {
         AssetSlot(R.id.row_asset_3, R.id.iv_asset_3, R.id.iv_asset_3_name, R.id.iv_asset_3_value, R.id.iv_asset_3_toman, R.id.iv_asset_3_pct),
         AssetSlot(R.id.row_asset_4, R.id.iv_asset_4, R.id.iv_asset_4_name, R.id.iv_asset_4_value, R.id.iv_asset_4_toman, R.id.iv_asset_4_pct),
         AssetSlot(R.id.row_asset_5, R.id.iv_asset_5, R.id.iv_asset_5_name, R.id.iv_asset_5_value, R.id.iv_asset_5_toman, R.id.iv_asset_5_pct),
-        AssetSlot(R.id.row_asset_6, R.id.iv_asset_6, R.id.iv_asset_6_name, R.id.iv_asset_6_value, R.id.iv_asset_6_toman, R.id.iv_asset_6_pct)
+        AssetSlot(R.id.row_asset_6, R.id.iv_asset_6, R.id.iv_asset_6_name, R.id.iv_asset_6_value, R.id.iv_asset_6_toman, R.id.iv_asset_6_pct),
+        AssetSlot(R.id.row_asset_7, R.id.iv_asset_7, R.id.iv_asset_7_name, R.id.iv_asset_7_value, R.id.iv_asset_7_toman, R.id.iv_asset_7_pct)
     )
 
     fun allIds(context: Context): IntArray {
@@ -239,3 +240,4 @@ object WidgetRenderer {
         }
     }
 }
+
