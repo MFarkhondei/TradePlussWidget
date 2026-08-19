@@ -9,7 +9,7 @@
     <string name="trend_7d">روند ۷ روزه (ارزش سبد)</string>
     <string name="assets">دارایی‌ها</string>
     <string name="current_value">ارزش جاری</string>
-    <string name="change_percent">تغییر %</string>
+    <string name="change_percent">سود/زیان</string>
     <string name="toman">تومان</string>
     <string name="last_update">آخرین بروزرسانی</string>
     <string name="config_title">ورود به ویجت ترید پلاس</string>
