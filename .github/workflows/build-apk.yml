@@ -57,12 +57,12 @@ jobs:
       - name: Prepare APK artifact
         run: |
           mkdir -p dist
-          cp app/build/outputs/apk/debug/app-debug.apk dist/TradePluss-Widget-v1.0.0.apk
+          cp app/build/outputs/apk/debug/app-debug.apk dist/TradePluss-Widget-v1.2.0.apk
           ls -la dist/
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: TradePluss-Widget-v1.0.0
-          path: dist/TradePluss-Widget-v1.0.0.apk
+          name: TradePluss-Widget-v1.2.0
+          path: dist/TradePluss-Widget-v1.2.0.apk
           retention-days: 90
