@@ -41,8 +41,7 @@ object WidgetRenderer {
         AssetSlot(R.id.row_asset_3, R.id.iv_asset_3, R.id.iv_asset_3_name, R.id.iv_asset_3_value, R.id.iv_asset_3_toman, R.id.iv_asset_3_pct),
         AssetSlot(R.id.row_asset_4, R.id.iv_asset_4, R.id.iv_asset_4_name, R.id.iv_asset_4_value, R.id.iv_asset_4_toman, R.id.iv_asset_4_pct),
         AssetSlot(R.id.row_asset_5, R.id.iv_asset_5, R.id.iv_asset_5_name, R.id.iv_asset_5_value, R.id.iv_asset_5_toman, R.id.iv_asset_5_pct),
-        AssetSlot(R.id.row_asset_6, R.id.iv_asset_6, R.id.iv_asset_6_name, R.id.iv_asset_6_value, R.id.iv_asset_6_toman, R.id.iv_asset_6_pct),
-        AssetSlot(R.id.row_asset_7, R.id.iv_asset_7, R.id.iv_asset_7_name, R.id.iv_asset_7_value, R.id.iv_asset_7_toman, R.id.iv_asset_7_pct)
+        AssetSlot(R.id.row_asset_6, R.id.iv_asset_6, R.id.iv_asset_6_name, R.id.iv_asset_6_value, R.id.iv_asset_6_toman, R.id.iv_asset_6_pct)
     )
 
     fun allIds(context: Context): IntArray {
@@ -197,15 +196,31 @@ object WidgetRenderer {
             if (offline) "آفلاین · $stamp" else stamp, 11f, MUTED
         )
 
+        val visibleItems = selectVisibleItems(data.items)
         for (i in slots.indices) {
             val slot = slots[i]
-            if (i < data.items.size) {
+            if (i < visibleItems.size) {
                 views.setViewVisibility(slot.row, View.VISIBLE)
-                bindAsset(context, views, slot, data.items[i])
+                bindAsset(context, views, slot, visibleItems[i])
             } else {
                 views.setViewVisibility(slot.row, View.GONE)
             }
         }
+    }
+
+    private fun selectVisibleItems(items: List<AssetItem>): List<AssetItem> {
+        if (items.size <= slots.size) return items
+
+        val visible = items.take(slots.size).toMutableList()
+        val gold750 = items.drop(slots.size).firstOrNull {
+            it.symbol.equals("Gold750", ignoreCase = true) ||
+                    it.coinName.contains("۷۵۰") ||
+                    it.coinName.contains("750")
+        }
+        if (gold750 != null && visible.none { it.symbol.equals("Gold750", ignoreCase = true) }) {
+            visible[visible.lastIndex] = gold750
+        }
+        return visible
     }
 
     private fun bindAsset(context: Context, views: RemoteViews, slot: AssetSlot, item: AssetItem) {
