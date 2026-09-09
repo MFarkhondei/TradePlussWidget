@@ -140,10 +140,9 @@ object WidgetRenderer {
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
 
         FontHelper.setTextBitmap(views, context, R.id.iv_title, context.getString(R.string.widget_name), 18f, GOLD, bold = true)
-        FontHelper.setTextBitmap(views, context, R.id.iv_label_total, context.getString(R.string.total_assets), 13f, SECONDARY)
-        FontHelper.setTextBitmap(views, context, R.id.iv_label_total_usd, context.getString(R.string.total_assets), 13f, SECONDARY)
+        FontHelper.setTextBitmap(views, context, R.id.iv_label_total, context.getString(R.string.total_assets), 14f, SECONDARY, bold = true)
         FontHelper.setTextBitmap(views, context, R.id.iv_label_usd_total, context.getString(R.string.usd), 12f, MUTED)
-        FontHelper.setTextBitmap(views, context, R.id.iv_total_assets_usd, "—", 26f, GOLD, bold = true)
+        FontHelper.setTextBitmap(views, context, R.id.iv_total_assets_usd, "—", 32f, GOLD, bold = true)
         FontHelper.setTextBitmap(views, context, R.id.iv_label_toman_total, context.getString(R.string.toman), 12f, MUTED)
         FontHelper.setTextBitmap(views, context, R.id.iv_label_pnl, context.getString(R.string.daily_pnl), 12f, MUTED)
         FontHelper.setTextBitmap(views, context, R.id.iv_label_buy, context.getString(R.string.daily_buy), 12f, MUTED)
@@ -185,13 +184,13 @@ object WidgetRenderer {
 
         FontHelper.setTextBitmap(
             views, context, R.id.iv_total_assets,
-            NumberUtils.format(data.totalAssetsToman), 26f, GOLD, bold = true
+            NumberUtils.format(data.totalAssetsToman), 32f, GOLD, bold = true
         )
 
         val dollarText = data.dollarValue()?.let { NumberUtils.formatUsd(it) } ?: "—"
         FontHelper.setTextBitmap(
             views, context, R.id.iv_total_assets_usd,
-            dollarText, 26f, GOLD, bold = true
+            dollarText, 32f, GOLD, bold = true
         )
         views.setContentDescription(R.id.iv_total_assets_usd, "$dollarText ${context.getString(R.string.usd)}")
         views.setContentDescription(R.id.iv_total_assets, "${NumberUtils.format(data.totalAssetsToman)} ${context.getString(R.string.toman)}")
