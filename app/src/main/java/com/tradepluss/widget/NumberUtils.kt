@@ -12,6 +12,8 @@ object NumberUtils {
 
     fun format(value: Long): String = formatter.format(value)
 
+    fun formatUsd(value: Double): String = DecimalFormat("#,##0", symbols).format(value)
+
     fun formatSigned(value: Long): String {
         val abs = format(kotlin.math.abs(value))
         return if (value >= 0) "+$abs" else "-$abs"
