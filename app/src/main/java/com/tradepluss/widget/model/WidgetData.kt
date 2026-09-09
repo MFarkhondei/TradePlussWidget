@@ -16,12 +16,14 @@ data class WidgetResponse(
     val updatedAt: String? = null
 ) {
     fun dollarValue(): Double? {
-        totalAssetsUsd?.takeIf { it.isFinite() && it >= 0 }?.let { return it }
         if (totalAssetsToman == 0L) return 0.0
         val rate = usdRateToman?.takeIf { it.isFinite() && it > 0 }
             ?: items.firstOrNull {
-                it.symbol.trim().equals("USDT", ignoreCase = true) && it.currentPrice > 0
-            }?.currentPrice?.toDouble()
+                val symbol = it.symbol.trim().uppercase()
+                val name = it.coinName.trim()
+                symbol in setOf("USD", "USDT", "USDTR", "DOLLAR") ||
+                    name.contains("دلار") || name.contains("تتر")
+            }?.currentPrice?.toDouble()?.takeIf { it > 0 }
         return rate?.let { totalAssetsToman.toDouble() / it }
     }
 }
