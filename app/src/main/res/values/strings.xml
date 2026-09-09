@@ -35,4 +35,5 @@
         <item>@string/interval_120</item>
         <item>@string/interval_manual</item>
     </string-array>
+    <string name="usd">دلار</string>
 </resources>
